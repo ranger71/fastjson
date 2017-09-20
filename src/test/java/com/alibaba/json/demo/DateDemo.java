@@ -8,7 +8,7 @@ import org.junit.Assert;
 import com.alibaba.fastjson.JSON;
 
 import junit.framework.TestCase;
-
+/*
 public class DateDemo extends TestCase { 
 
     public void test_0() throws Exception {
@@ -19,3 +19,4 @@ public class DateDemo extends TestCase {
 
 
 }
+*/

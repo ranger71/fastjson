@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 /**
  * Created by wenshao on 20/02/2017.
- */
+
 public class TestNotMatch extends TestCase {
     public void test_0() throws Exception {
         for (int i = 0; i < 10;++i) {
@@ -30,3 +30,4 @@ public class TestNotMatch extends TestCase {
         public String desc;
     }
 }
+*/

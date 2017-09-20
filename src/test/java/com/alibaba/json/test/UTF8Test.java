@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 
 /**
  * Created by wenshao on 24/07/2017.
- */
+
 public class UTF8Test extends TestCase {
     Charset charset = Charset.forName("UTF-8");
 
@@ -33,3 +33,4 @@ public class UTF8Test extends TestCase {
         }
     }
 }
+*/

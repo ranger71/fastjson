@@ -225,7 +225,7 @@ class ListTypeFieldDeserializer extends FieldDeserializer {
             }
 
         }
-        return -1;//paramIndex;
+        return paramIndex;
     }
 
 }

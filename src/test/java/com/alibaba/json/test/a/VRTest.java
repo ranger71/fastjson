@@ -10,7 +10,7 @@ import java.io.File;
 /**
  * Created by wenshao on 05/01/2017.
  */
-public class VRTest extends TestCase {
+/*public class VRTest extends TestCase {
     public void test_vr() throws Exception {
         File file = new File("/Users/wenshao/Downloads/model_p_30687.json");
 
@@ -34,3 +34,4 @@ public class VRTest extends TestCase {
         }
     }
 }
+*/

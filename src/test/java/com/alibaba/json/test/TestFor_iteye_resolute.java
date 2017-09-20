@@ -8,13 +8,13 @@ import junit.framework.TestCase;
 import org.apache.commons.lang.SerializationUtils;
 
 import com.alibaba.fastjson.JSON;
-
+/*
 public class TestFor_iteye_resolute extends TestCase {
 
     private static final int SIZE       = 1000;
 
     private static final int LOOP_COUNT = 1000 * 10;
-    
+
     public void test_perf() {
         for (int i = 0; i < 10; ++i) {
             json();
@@ -87,3 +87,4 @@ public class TestFor_iteye_resolute extends TestCase {
     }
 
 }
+*/

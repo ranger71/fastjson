@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
-
+/*
 public class JSONLibXmlTest extends TestCase {
     public void test_xml() throws Exception {
         XMLSerializer xmlSerializer = new XMLSerializer();
@@ -23,4 +23,4 @@ public class JSONLibXmlTest extends TestCase {
         String text = xmlSerializer.write(json);
         System.out.println(text);
     }
-}
+}*/

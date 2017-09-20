@@ -21,16 +21,16 @@ import data.taobao.cart.OrderBy;
 import data.taobao.cart.Promotion;
 import data.taobao.cart.ShopV2;
 import junit.framework.TestCase;
-
+/*
 public class CatTest extends TestCase {
 private String text;
-    
+
     protected void setUp() throws Exception {
         InputStream is = Cart.class.getClassLoader().getResourceAsStream("json/taobao/cart.json");
         text = IOUtils.toString(is);
         is.close();
     }
-    
+
     public void test_decode() throws Exception {
         FieldTypeResolver fieldTypeResolver = new FieldTypeResolver() {
             public Type resolve(Object object, String fieldName) {
@@ -78,4 +78,4 @@ private String text;
         JSONObject object = JSON.parseObject(text);
         System.out.println(JSON.toJSONString(object));
     }
-}
+}*/

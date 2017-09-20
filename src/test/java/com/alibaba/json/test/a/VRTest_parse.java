@@ -11,7 +11,7 @@ import java.io.File;
 /**
  * Created by wenshao on 05/01/2017.
  */
-public class VRTest_parse extends TestCase {
+/*public class VRTest_parse extends TestCase {
     public void test_vr() throws Exception {
         JSON.DEFAULT_PARSER_FEATURE &= ~Feature.UseBigDecimal.mask;
 
@@ -33,4 +33,4 @@ public class VRTest_parse extends TestCase {
             JSON.parseObject(str);
         }
     }
-}
+}*/

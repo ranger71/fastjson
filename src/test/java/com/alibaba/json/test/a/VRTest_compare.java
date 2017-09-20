@@ -15,7 +15,8 @@ import java.util.Map;
 /**
  * Created by wenshao on 05/01/2017.
  */
-public class VRTest_compare extends TestCase {
+/*public class VRTest_compare extends TestCase {
+
     public void test_vr() throws Exception {
         File file2 = new File("/Users/wenshao/Downloads/model_p_30687_r.json");
         String str = FileUtils.readFileToString(file2);
@@ -95,4 +96,4 @@ public class VRTest_compare extends TestCase {
             System.out.println("diff value. " + a.getClass());
         }
     }
-}
+}*/

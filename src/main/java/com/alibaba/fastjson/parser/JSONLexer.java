@@ -3092,7 +3092,7 @@ public final class JSONLexer {
         float[] array = new float[16];
         int arrayIndex = 0;
 
-        Clone6 clone6 = new Clone6(offset, chLocal, array, arrayIndex).invoke();
+        Clones6and7 clone6 = new Clones6and7(offset, chLocal, array, arrayIndex).invoke();
         if (clone6.is()) return null;
         chLocal = clone6.getChLocal();
         offset = clone6.getOffset();
@@ -3177,7 +3177,7 @@ public final class JSONLexer {
                 float[] array = new float[16];
                 int arrayIndex = 0;
 
-                Clone7 clone7 = new Clone7(offset, chLocal, array, arrayIndex).invoke();
+                Clones6and7 clone7 = new Clones6and7(offset, chLocal, array, arrayIndex).invoke();
                 if (clone7.is()) return null;
                 array = clone7.getArray();
                 arrayIndex = clone7.getArrayIndex();
@@ -3399,7 +3399,7 @@ public final class JSONLexer {
         double[] array = new double[16];
         int arrayIndex = 0;
 
-        Clone4 clone4 = new Clone4(offset, chLocal, array, arrayIndex).invoke();
+        Clones4and5 clone4 = new Clones4and5(offset, chLocal, array, arrayIndex).invoke();
         if (clone4.is()) return null;
         chLocal = clone4.getChLocal();
         offset = clone4.getOffset();
@@ -3484,7 +3484,7 @@ public final class JSONLexer {
                 double[] array = new double[16];
                 int arrayIndex = 0;
 
-                Clone5 clone5 = new Clone5(offset, chLocal, array, arrayIndex).invoke();
+                Clones4and5 clone5 = new Clones4and5(offset, chLocal, array, arrayIndex).invoke();
                 if (clone5.is()) return null;
                 array = clone5.getArray();
                 arrayIndex = clone5.getArrayIndex();
@@ -4295,14 +4295,14 @@ public final class JSONLexer {
         }
     }
 
-    private class Clone5 {
+    private class Clones4and5 {
         private boolean myResult;
         private int offset;
         private char chLocal;
         private double[] array;
         private int arrayIndex;
 
-        public Clone5(int offset, char chLocal, double[] array, int arrayIndex) {
+        public Clones4and5(int offset, char chLocal, double[] array, int arrayIndex) {
             this.offset = offset;
             this.chLocal = chLocal;
             this.array = array;
@@ -4329,7 +4329,7 @@ public final class JSONLexer {
             return arrayIndex;
         }
 
-        public Clone5 invoke() {
+        public Clones4and5 invoke() {
             int charIndex;
             for (; ; ) {
                 int start = bp + offset - 1;
@@ -4487,389 +4487,14 @@ public final class JSONLexer {
         }
     }
 
-    private class Clone4 {
-        private boolean myResult;
-        private int offset;
-        private char chLocal;
-        private double[] array;
-        private int arrayIndex;
-
-        public Clone4(int offset, char chLocal, double[] array, int arrayIndex) {
-            this.offset = offset;
-            this.chLocal = chLocal;
-            this.array = array;
-            this.arrayIndex = arrayIndex;
-        }
-
-        boolean is() {
-            return myResult;
-        }
-
-        public int getOffset() {
-            return offset;
-        }
-
-        public char getChLocal() {
-            return chLocal;
-        }
-
-        public double[] getArray() {
-            return array;
-        }
-
-        public Clone4 invoke() {
-            int charIndex;
-            for (;;) {
-                int start = bp + offset - 1;
-
-                boolean negative = chLocal == '-';
-                if (negative) {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
-                            EOI //
-                            : text.charAt(charIndex);
-                }
-
-                if (chLocal >= '0' && chLocal <= '9') {
-                    myResult = false;
-                    boolean shouldBreak = false;
-                    int count = 0, intVal = 0, power = 0;
-                    String text2 = null;
-                    boolean exp = false;
-                    marked:
-                    {
-                        intVal = chLocal - '0';
-                        for (; ; ) {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                intVal = intVal * 10 + (chLocal - '0');
-                                continue;
-                            } else {
-                                break;
-                            }
-                        }
-
-                        power = 1;
-                        if (chLocal == '.') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                intVal = intVal * 10 + (chLocal - '0');
-                                power *= 10;
-                                for (; ; ) {
-                                    // chLocal = charAt(bp + (offset++));
-                                    charIndex = bp + (offset++);
-                                    chLocal = charIndex >= JSONLexer.this.len ? //
-                                            EOI //
-                                            : text.charAt(charIndex);
-
-                                    if (chLocal >= '0' && chLocal <= '9') {
-                                        intVal = intVal * 10 + (chLocal - '0');
-                                        power *= 10;
-                                        continue;
-                                    } else {
-                                        break;
-                                    }
-                                }
-                            } else {
-                                matchStat = NOT_MATCH;
-                                myResult = true;
-                            }
-                        }
-                        if (myResult) break marked;
-                        exp = chLocal == 'e' || chLocal == 'E';
-                        if (exp) {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            if (chLocal == '+' || chLocal == '-') {
-                                // chLocal = charAt(bp + (offset++));
-                                charIndex = bp + (offset++);
-                                chLocal = charIndex >= JSONLexer.this.len ? //
-                                        EOI //
-                                        : text.charAt(charIndex);
-                            }
-                            for (; ; ) {
-                                if (chLocal >= '0' && chLocal <= '9') {
-                                    // chLocal = charAt(bp + (offset++));
-                                    charIndex = bp + (offset++);
-                                    chLocal = charIndex >= JSONLexer.this.len ? //
-                                            EOI //
-                                            : text.charAt(charIndex);
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-
-                        count = bp + offset - start - 1;
-
-                        if (!exp && count < 10) {
-                        } else {
-                            text2 = JSONLexer.this.subString(start, count);
-                        }
-
-                        if (chLocal == ',') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                        } else if (chLocal == ']') {
-                            //chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            shouldBreak = true;
-                        }
-                    }
-                    after:
-                    {
-                        if (myResult) break after;
-                        double value;
-                        if (!exp && count < 10) {
-                            value = ((double) intVal) / power;
-                            if (negative) {
-                                value = -value;
-                            }
-                        } else {
-                            value = Double.parseDouble(text2);
-                        }
-
-                        if (arrayIndex >= array.length) {
-                            double[] tmp = new double[array.length * 3 / 2];
-                            System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                            array = tmp;
-                        }
-                        array[arrayIndex++] = value;
-                    }
-                    if (myResult) return this;
-                    if (shouldBreak) break;
-                } else {
-                    matchStat = NOT_MATCH;
-                    myResult = true;
-                    return this;
-                }
-            }
-
-
-            if (arrayIndex != array.length) {
-                double[] tmp = new double[arrayIndex];
-                System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                array = tmp;
-            }
-            myResult = false;
-            return this;
-        }
-    }
-
-    private class Clone6 {
+    private class Clones6and7 {
         private boolean myResult;
         private int offset;
         private char chLocal;
         private float[] array;
         private int arrayIndex;
 
-        public Clone6(int offset, char chLocal, float[] array, int arrayIndex) {
-            this.offset = offset;
-            this.chLocal = chLocal;
-            this.array = array;
-            this.arrayIndex = arrayIndex;
-        }
-
-        boolean is() {
-            return myResult;
-        }
-
-        public int getOffset() {
-            return offset;
-        }
-
-        public char getChLocal() {
-            return chLocal;
-        }
-
-        public float[] getArray() {
-            return array;
-        }
-
-        public Clone6 invoke() {
-            int charIndex;
-            for (;;) {
-                int start = bp + offset - 1;
-
-                boolean negative = chLocal == '-';
-                if (negative) {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
-                            EOI //
-                            : text.charAt(charIndex);
-                }
-
-                if (chLocal >= '0' && chLocal <= '9') {
-                    myResult = false;
-                    boolean shouldBreak = false;
-                    int count = 0, intVal = 0, power = 0;
-                    String text2 = null;
-                    boolean exp = false;
-                    marked:
-                    {
-                        intVal = chLocal - '0';
-                        for (; ; ) {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                intVal = intVal * 10 + (chLocal - '0');
-                                continue;
-                            } else {
-                                break;
-                            }
-                        }
-
-                        power = 1;
-                        if (chLocal == '.') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                intVal = intVal * 10 + (chLocal - '0');
-                                power *= 10;
-                                for (; ; ) {
-                                    // chLocal = charAt(bp + (offset++));
-                                    charIndex = bp + (offset++);
-                                    chLocal = charIndex >= JSONLexer.this.len ? //
-                                            EOI //
-                                            : text.charAt(charIndex);
-
-                                    if (chLocal >= '0' && chLocal <= '9') {
-                                        intVal = intVal * 10 + (chLocal - '0');
-                                        power *= 10;
-                                        continue;
-                                    } else {
-                                        break;
-                                    }
-                                }
-                            } else {
-                                matchStat = NOT_MATCH;
-                                myResult = true;
-                            }
-                        }
-                        if (myResult) break marked;
-
-                        exp = chLocal == 'e' || chLocal == 'E';
-                        if (exp) {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            if (chLocal == '+' || chLocal == '-') {
-                                // chLocal = charAt(bp + (offset++));
-                                charIndex = bp + (offset++);
-                                chLocal = charIndex >= JSONLexer.this.len ? //
-                                        EOI //
-                                        : text.charAt(charIndex);
-                            }
-                            for (; ; ) {
-                                if (chLocal >= '0' && chLocal <= '9') {
-                                    // chLocal = charAt(bp + (offset++));
-                                    charIndex = bp + (offset++);
-                                    chLocal = charIndex >= JSONLexer.this.len ? //
-                                            EOI //
-                                            : text.charAt(charIndex);
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-
-                        count = bp + offset - start - 1;
-
-                        if (!exp && count < 10) {
-                        } else {
-                            text2 = JSONLexer.this.subString(start, count);
-                        }
-
-                        if (chLocal == ',') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                        } else if (chLocal == ']') {
-                            //chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            shouldBreak = true;
-                        }
-                    }
-                    after:
-                    {
-                        if (myResult) break after;
-                        float value;
-                        if (!exp && count < 10) {
-                            value = ((float) intVal) / power;
-                            if (negative) {
-                                value = -value;
-                            }
-                        } else {
-                            value = Float.parseFloat(text2);
-                        }
-
-                        if (arrayIndex >= array.length) {
-                            float[] tmp = new float[array.length * 3 / 2];
-                            System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                            array = tmp;
-                        }
-                        array[arrayIndex++] = value;
-                    }
-                    if (myResult) return this;
-                    if (shouldBreak) break;
-                } else {
-                    matchStat = NOT_MATCH;
-                    myResult = true;
-                    return this;
-                }
-            }
-
-
-            if (arrayIndex != array.length) {
-                float[] tmp = new float[arrayIndex];
-                System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                array = tmp;
-            }
-            myResult = false;
-            return this;
-        }
-    }
-
-    private class Clone7 {
-        private boolean myResult;
-        private int offset;
-        private char chLocal;
-        private float[] array;
-        private int arrayIndex;
-
-        public Clone7(int offset, char chLocal, float[] array, int arrayIndex) {
+        public Clones6and7(int offset, char chLocal, float[] array, int arrayIndex) {
             this.offset = offset;
             this.chLocal = chLocal;
             this.array = array;
@@ -4896,7 +4521,7 @@ public final class JSONLexer {
             return arrayIndex;
         }
 
-        public Clone7 invoke() {
+        public Clones6and7 invoke() {
             int charIndex;
             for (; ; ) {
                 int start = bp + offset - 1;

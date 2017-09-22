@@ -4305,7 +4305,7 @@ public final class JSONLexer {
                     int count = 0, intVal = 0, power = 0;
                     String text2 = null;
                     boolean exp = false;
-                    block:
+                    marked:
                     {
                         intVal = chLocal - '0';
                         for (; ; ) {
@@ -4354,7 +4354,7 @@ public final class JSONLexer {
                                 myResult = true;
                             }
                         }
-                        if (myResult) break block;
+                        if (myResult) break marked;
                         exp = chLocal == 'e' || chLocal == 'E';
                         if (exp) {
                             // chLocal = charAt(bp + (offset++));
@@ -4383,23 +4383,10 @@ public final class JSONLexer {
                         }
 
                         count = bp + offset - start - 1;
-                        double value;
                         if (!exp && count < 10) {
-                            value = ((double) intVal) / power;
-                            if (negative) {
-                                value = -value;
-                            }
                         } else {
                             text2 = JSONLexer.this.subString(start, count);
-                            value = Double.parseDouble(text2);
                         }
-
-                        if (arrayIndex >= array.length) {
-                            double[] tmp = new double[array.length * 3 / 2];
-                            System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                            array = tmp;
-                        }
-                        array[arrayIndex++] = value;
 
                         if (chLocal == ',') {
                             // chLocal = charAt(bp + (offset++));
@@ -4415,6 +4402,27 @@ public final class JSONLexer {
                                     : text.charAt(charIndex);
                             shouldBreak = true;
                         }
+                    }
+                    after:
+                    {
+                        if (myResult) break after;
+
+                        double value;
+                        if (!exp && count < 10) {
+                            value = ((double) intVal) / power;
+                            if (negative) {
+                                value = -value;
+                            }
+                        } else {
+                            value = Double.parseDouble(text2);
+                        }
+
+                        if (arrayIndex >= array.length) {
+                            double[] tmp = new double[array.length * 3 / 2];
+                            System.arraycopy(array, 0, tmp, 0, arrayIndex);
+                            array = tmp;
+                        }
+                        array[arrayIndex++] = value;
                     }
                     if (myResult) return this;
                     if (shouldBreak) break;

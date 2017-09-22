@@ -4352,10 +4352,9 @@ public final class JSONLexer {
                             } else {
                                 matchStat = NOT_MATCH;
                                 myResult = true;
-                                break block;
                             }
                         }
-
+                        if (myResult) break block;
                         exp = chLocal == 'e' || chLocal == 'E';
                         if (exp) {
                             // chLocal = charAt(bp + (offset++));

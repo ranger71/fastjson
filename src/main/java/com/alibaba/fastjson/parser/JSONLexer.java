@@ -4298,8 +4298,8 @@ public final class JSONLexer {
     private abstract class CloneGroup2 {
         private boolean myResult;
         private int offset;
-        protected char chLocal;
-        protected boolean shouldBreak;
+        private char chLocal;
+        private boolean shouldBreak;
         protected int count;
         protected int intVal;
         protected int power;

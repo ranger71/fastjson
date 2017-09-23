@@ -4445,8 +4445,7 @@ public final class JSONLexer {
             }
 
             count = jsonLexer.bp + offset - start - 1;
-            if (!exp && count < 10) {
-            } else {
+            if (exp || count >= 10) {
                 text2 = jsonLexer.subString(start, count);
             }
 

@@ -4296,7 +4296,7 @@ public final class JSONLexer {
     }
 
     private abstract static class CloneGroup2 {
-        protected boolean myResult;
+        private boolean myResult;
         private int offset;
         protected char chLocal;
         protected boolean shouldBreak;
@@ -4346,8 +4346,8 @@ public final class JSONLexer {
 
                 if (chLocal >= '0' && chLocal <= '9') {
                     marked(start);
-                    after(negative);
                     if (myResult) return this;
+                    after(negative);
                     if (shouldBreak) break;
                 } else {
                     jsonLexer.matchStat = NOT_MATCH;
@@ -4368,104 +4368,101 @@ public final class JSONLexer {
             int charIndex;
             myResult = false;
             shouldBreak = false;
-            marked:
-            {
-                intVal = chLocal - '0';
-                for (; ; ) {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = jsonLexer.bp + (offset++);
-                    chLocal = charIndex >= jsonLexer.len ? //
-                            EOI //
-                            : jsonLexer.text.charAt(charIndex);
+            intVal = chLocal - '0';
+            for (; ; ) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = jsonLexer.bp + (offset++);
+                chLocal = charIndex >= jsonLexer.len ? //
+                        EOI //
+                        : jsonLexer.text.charAt(charIndex);
 
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        intVal = intVal * 10 + (chLocal - '0');
-                        continue;
-                    } else {
-                        break;
-                    }
+                if (chLocal >= '0' && chLocal <= '9') {
+                    intVal = intVal * 10 + (chLocal - '0');
+                    continue;
+                } else {
+                    break;
                 }
+            }
 
-                power = 1;
-                if (chLocal == '.') {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = jsonLexer.bp + (offset++);
-                    chLocal = charIndex >= jsonLexer.len ? //
-                            EOI //
-                            : jsonLexer.text.charAt(charIndex);
+            power = 1;
+            if (chLocal == '.') {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = jsonLexer.bp + (offset++);
+                chLocal = charIndex >= jsonLexer.len ? //
+                        EOI //
+                        : jsonLexer.text.charAt(charIndex);
 
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        intVal = intVal * 10 + (chLocal - '0');
-                        power *= 10;
-                        for (; ; ) {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = jsonLexer.bp + (offset++);
-                            chLocal = charIndex >= jsonLexer.len ? //
-                                    EOI //
-                                    : jsonLexer.text.charAt(charIndex);
-
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                intVal = intVal * 10 + (chLocal - '0');
-                                power *= 10;
-                                continue;
-                            } else {
-                                break;
-                            }
-                        }
-                    } else {
-                        jsonLexer.matchStat = NOT_MATCH;
-                        myResult = true;
-                    }
-                }
-                if (myResult) break marked;
-
-                exp = chLocal == 'e' || chLocal == 'E';
-                if (exp) {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = jsonLexer.bp + (offset++);
-                    chLocal = charIndex >= jsonLexer.len ? //
-                            EOI //
-                            : jsonLexer.text.charAt(charIndex);
-                    if (chLocal == '+' || chLocal == '-') {
+                if (chLocal >= '0' && chLocal <= '9') {
+                    intVal = intVal * 10 + (chLocal - '0');
+                    power *= 10;
+                    for (; ; ) {
                         // chLocal = charAt(bp + (offset++));
                         charIndex = jsonLexer.bp + (offset++);
                         chLocal = charIndex >= jsonLexer.len ? //
                                 EOI //
                                 : jsonLexer.text.charAt(charIndex);
-                    }
-                    for (; ; ) {
+
                         if (chLocal >= '0' && chLocal <= '9') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = jsonLexer.bp + (offset++);
-                            chLocal = charIndex >= jsonLexer.len ? //
-                                    EOI //
-                                    : jsonLexer.text.charAt(charIndex);
+                            intVal = intVal * 10 + (chLocal - '0');
+                            power *= 10;
+                            continue;
                         } else {
                             break;
                         }
                     }
-                }
-
-                count = jsonLexer.bp + offset - start - 1;
-                if (!exp && count < 10) {
                 } else {
-                    text2 = jsonLexer.subString(start, count);
+                    jsonLexer.matchStat = NOT_MATCH;
+                    myResult = true;
+                    return;
                 }
+            }
 
-                if (chLocal == ',') {
+            exp = chLocal == 'e' || chLocal == 'E';
+            if (exp) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = jsonLexer.bp + (offset++);
+                chLocal = charIndex >= jsonLexer.len ? //
+                        EOI //
+                        : jsonLexer.text.charAt(charIndex);
+                if (chLocal == '+' || chLocal == '-') {
                     // chLocal = charAt(bp + (offset++));
                     charIndex = jsonLexer.bp + (offset++);
                     chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
                             : jsonLexer.text.charAt(charIndex);
-                } else if (chLocal == ']') {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = jsonLexer.bp + (offset++);
-                    chLocal = charIndex >= jsonLexer.len ? //
-                            EOI //
-                            : jsonLexer.text.charAt(charIndex);
-                    shouldBreak = true;
                 }
+                for (; ; ) {
+                    if (chLocal >= '0' && chLocal <= '9') {
+                        // chLocal = charAt(bp + (offset++));
+                        charIndex = jsonLexer.bp + (offset++);
+                        chLocal = charIndex >= jsonLexer.len ? //
+                                EOI //
+                                : jsonLexer.text.charAt(charIndex);
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            count = jsonLexer.bp + offset - start - 1;
+            if (!exp && count < 10) {
+            } else {
+                text2 = jsonLexer.subString(start, count);
+            }
+
+            if (chLocal == ',') {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = jsonLexer.bp + (offset++);
+                chLocal = charIndex >= jsonLexer.len ? //
+                        EOI //
+                        : jsonLexer.text.charAt(charIndex);
+            } else if (chLocal == ']') {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = jsonLexer.bp + (offset++);
+                chLocal = charIndex >= jsonLexer.len ? //
+                        EOI //
+                        : jsonLexer.text.charAt(charIndex);
+                shouldBreak = true;
             }
         }
     }
@@ -4491,27 +4488,22 @@ public final class JSONLexer {
         }
 
         protected void after(boolean negative) {
-            after:
-            {
-                if (myResult) break after;
-
-                double value;
-                if (!exp && count < 10) {
-                    value = ((double) intVal) / power;
-                    if (negative) {
-                        value = -value;
-                    }
-                } else {
-                    value = Double.parseDouble(text2);
+            double value;
+            if (!exp && count < 10) {
+                value = ((double) intVal) / power;
+                if (negative) {
+                    value = -value;
                 }
-
-                if (arrayIndex >= array.length) {
-                    double[] tmp = new double[array.length * 3 / 2];
-                    System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                    array = tmp;
-                }
-                array[arrayIndex++] = value;
+            } else {
+                value = Double.parseDouble(text2);
             }
+
+            if (arrayIndex >= array.length) {
+                double[] tmp = new double[array.length * 3 / 2];
+                System.arraycopy(array, 0, tmp, 0, arrayIndex);
+                array = tmp;
+            }
+            array[arrayIndex++] = value;
         }
     }
 
@@ -4536,26 +4528,22 @@ public final class JSONLexer {
         }
 
         protected void after(boolean negative) {
-            after:
-            {
-                if (myResult) break after;
-                float value;
-                if (!exp && count < 10) {
-                    value = ((float) intVal) / power;
-                    if (negative) {
-                        value = -value;
-                    }
-                } else {
-                    value = Float.parseFloat(text2);
+            float value;
+            if (!exp && count < 10) {
+                value = ((float) intVal) / power;
+                if (negative) {
+                    value = -value;
                 }
-
-                if (arrayIndex >= array.length) {
-                    float[] tmp = new float[array.length * 3 / 2];
-                    System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                    array = tmp;
-                }
-                array[arrayIndex++] = value;
+            } else {
+                value = Float.parseFloat(text2);
             }
+
+            if (arrayIndex >= array.length) {
+                float[] tmp = new float[array.length * 3 / 2];
+                System.arraycopy(array, 0, tmp, 0, arrayIndex);
+                array = tmp;
+            }
+            array[arrayIndex++] = value;
         }
     }
 }

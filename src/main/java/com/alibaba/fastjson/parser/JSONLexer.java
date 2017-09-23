@@ -4349,127 +4349,8 @@ public final class JSONLexer {
                 }
 
                 if (chLocal >= '0' && chLocal <= '9') {
-                    myResult = false;
-                    shouldBreak = false;
-                    marked:
-                    {
-                        intVal = chLocal - '0';
-                        for (; ; ) {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                intVal = intVal * 10 + (chLocal - '0');
-                                continue;
-                            } else {
-                                break;
-                            }
-                        }
-
-                        power = 1;
-                        if (chLocal == '.') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                intVal = intVal * 10 + (chLocal - '0');
-                                power *= 10;
-                                for (; ; ) {
-                                    // chLocal = charAt(bp + (offset++));
-                                    charIndex = bp + (offset++);
-                                    chLocal = charIndex >= JSONLexer.this.len ? //
-                                            EOI //
-                                            : text.charAt(charIndex);
-
-                                    if (chLocal >= '0' && chLocal <= '9') {
-                                        intVal = intVal * 10 + (chLocal - '0');
-                                        power *= 10;
-                                        continue;
-                                    } else {
-                                        break;
-                                    }
-                                }
-                            } else {
-                                matchStat = NOT_MATCH;
-                                myResult = true;
-                            }
-                        }
-                        if (myResult) break marked;
-                        exp = chLocal == 'e' || chLocal == 'E';
-                        if (exp) {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            if (chLocal == '+' || chLocal == '-') {
-                                // chLocal = charAt(bp + (offset++));
-                                charIndex = bp + (offset++);
-                                chLocal = charIndex >= JSONLexer.this.len ? //
-                                        EOI //
-                                        : text.charAt(charIndex);
-                            }
-                            for (; ; ) {
-                                if (chLocal >= '0' && chLocal <= '9') {
-                                    // chLocal = charAt(bp + (offset++));
-                                    charIndex = bp + (offset++);
-                                    chLocal = charIndex >= JSONLexer.this.len ? //
-                                            EOI //
-                                            : text.charAt(charIndex);
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-
-                        count = bp + offset - start - 1;
-                        if (!exp && count < 10) {
-                        } else {
-                            text2 = JSONLexer.this.subString(start, count);
-                        }
-
-                        if (chLocal == ',') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                        } else if (chLocal == ']') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            shouldBreak = true;
-                        }
-                    }
-                    after:
-                    {
-                        if (myResult) break after;
-
-                        double value;
-                        if (!exp && count < 10) {
-                            value = ((double) intVal) / power;
-                            if (negative) {
-                                value = -value;
-                            }
-                        } else {
-                            value = Double.parseDouble(text2);
-                        }
-
-                        if (arrayIndex >= array.length) {
-                            double[] tmp = new double[array.length * 3 / 2];
-                            System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                            array = tmp;
-                        }
-                        array[arrayIndex++] = value;
-                    }
+                    marked(start);
+                    after(negative);
                     if (myResult) return this;
                     if (shouldBreak) break;
                 } else {
@@ -4487,6 +4368,134 @@ public final class JSONLexer {
             }
             myResult = false;
             return this;
+        }
+
+        protected void after(boolean negative) {
+            after:
+            {
+                if (myResult) break after;
+
+                double value;
+                if (!exp && count < 10) {
+                    value = ((double) intVal) / power;
+                    if (negative) {
+                        value = -value;
+                    }
+                } else {
+                    value = Double.parseDouble(text2);
+                }
+
+                if (arrayIndex >= array.length) {
+                    double[] tmp = new double[array.length * 3 / 2];
+                    System.arraycopy(array, 0, tmp, 0, arrayIndex);
+                    array = tmp;
+                }
+                array[arrayIndex++] = value;
+            }
+        }
+
+        private void marked(int start) {
+            int charIndex;
+            myResult = false;
+            shouldBreak = false;
+            marked:
+            {
+                intVal = chLocal - '0';
+                for (; ; ) {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= JSONLexer.this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+
+                    if (chLocal >= '0' && chLocal <= '9') {
+                        intVal = intVal * 10 + (chLocal - '0');
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+
+                power = 1;
+                if (chLocal == '.') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= JSONLexer.this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+
+                    if (chLocal >= '0' && chLocal <= '9') {
+                        intVal = intVal * 10 + (chLocal - '0');
+                        power *= 10;
+                        for (; ; ) {
+                            // chLocal = charAt(bp + (offset++));
+                            charIndex = bp + (offset++);
+                            chLocal = charIndex >= JSONLexer.this.len ? //
+                                    EOI //
+                                    : text.charAt(charIndex);
+
+                            if (chLocal >= '0' && chLocal <= '9') {
+                                intVal = intVal * 10 + (chLocal - '0');
+                                power *= 10;
+                                continue;
+                            } else {
+                                break;
+                            }
+                        }
+                    } else {
+                        matchStat = NOT_MATCH;
+                        myResult = true;
+                    }
+                }
+                if (myResult) break marked;
+                exp = chLocal == 'e' || chLocal == 'E';
+                if (exp) {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= JSONLexer.this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                    if (chLocal == '+' || chLocal == '-') {
+                        // chLocal = charAt(bp + (offset++));
+                        charIndex = bp + (offset++);
+                        chLocal = charIndex >= JSONLexer.this.len ? //
+                                EOI //
+                                : text.charAt(charIndex);
+                    }
+                    for (; ; ) {
+                        if (chLocal >= '0' && chLocal <= '9') {
+                            // chLocal = charAt(bp + (offset++));
+                            charIndex = bp + (offset++);
+                            chLocal = charIndex >= JSONLexer.this.len ? //
+                                    EOI //
+                                    : text.charAt(charIndex);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                count = bp + offset - start - 1;
+                if (!exp && count < 10) {
+                } else {
+                    text2 = JSONLexer.this.subString(start, count);
+                }
+
+                if (chLocal == ',') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= JSONLexer.this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                } else if (chLocal == ']') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= JSONLexer.this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                    shouldBreak = true;
+                }
+            }
         }
     }
 
@@ -4544,127 +4553,8 @@ public final class JSONLexer {
                 }
 
                 if (chLocal >= '0' && chLocal <= '9') {
-                    myResult = false;
-                    shouldBreak = false;
-                    marked:
-                    {
-                        intVal = chLocal - '0';
-                        for (; ; ) {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                intVal = intVal * 10 + (chLocal - '0');
-                                continue;
-                            } else {
-                                break;
-                            }
-                        }
-
-                        power = 1;
-                        if (chLocal == '.') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                intVal = intVal * 10 + (chLocal - '0');
-                                power *= 10;
-                                for (; ; ) {
-                                    // chLocal = charAt(bp + (offset++));
-                                    charIndex = bp + (offset++);
-                                    chLocal = charIndex >= JSONLexer.this.len ? //
-                                            EOI //
-                                            : text.charAt(charIndex);
-
-                                    if (chLocal >= '0' && chLocal <= '9') {
-                                        intVal = intVal * 10 + (chLocal - '0');
-                                        power *= 10;
-                                        continue;
-                                    } else {
-                                        break;
-                                    }
-                                }
-                            } else {
-                                matchStat = NOT_MATCH;
-                                myResult = true;
-                            }
-                        }
-                        if (myResult) break marked;
-
-                        exp = chLocal == 'e' || chLocal == 'E';
-                        if (exp) {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            if (chLocal == '+' || chLocal == '-') {
-                                // chLocal = charAt(bp + (offset++));
-                                charIndex = bp + (offset++);
-                                chLocal = charIndex >= JSONLexer.this.len ? //
-                                        EOI //
-                                        : text.charAt(charIndex);
-                            }
-                            for (; ; ) {
-                                if (chLocal >= '0' && chLocal <= '9') {
-                                    // chLocal = charAt(bp + (offset++));
-                                    charIndex = bp + (offset++);
-                                    chLocal = charIndex >= JSONLexer.this.len ? //
-                                            EOI //
-                                            : text.charAt(charIndex);
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-
-                        count = bp + offset - start - 1;
-                        if (!exp && count < 10) {
-                        } else {
-                            text2 = JSONLexer.this.subString(start, count);
-                        }
-
-                        if (chLocal == ',') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                        } else if (chLocal == ']') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                            shouldBreak = true;
-                        }
-                    }
-                    after:
-                    {
-                        if (myResult) break after;
-                        float value;
-                        if (!exp && count < 10) {
-                            value = ((float) intVal) / power;
-                            if (negative) {
-                                value = -value;
-                            }
-                        } else {
-                            value = Float.parseFloat(text2);
-                        }
-
-                        if (arrayIndex >= array.length) {
-                            float[] tmp = new float[array.length * 3 / 2];
-                            System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                            array = tmp;
-                        }
-                        array[arrayIndex++] = value;
-                    }
+                    marked(start);
+                    after(negative);
                     if (myResult) return this;
                     if (shouldBreak) break;
                 } else {
@@ -4682,6 +4572,134 @@ public final class JSONLexer {
             }
             myResult = false;
             return this;
+        }
+
+        protected void after(boolean negative) {
+            after:
+            {
+                if (myResult) break after;
+                float value;
+                if (!exp && count < 10) {
+                    value = ((float) intVal) / power;
+                    if (negative) {
+                        value = -value;
+                    }
+                } else {
+                    value = Float.parseFloat(text2);
+                }
+
+                if (arrayIndex >= array.length) {
+                    float[] tmp = new float[array.length * 3 / 2];
+                    System.arraycopy(array, 0, tmp, 0, arrayIndex);
+                    array = tmp;
+                }
+                array[arrayIndex++] = value;
+            }
+        }
+
+        private void marked(int start) {
+            int charIndex;
+            myResult = false;
+            shouldBreak = false;
+            marked:
+            {
+                intVal = chLocal - '0';
+                for (; ; ) {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= JSONLexer.this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+
+                    if (chLocal >= '0' && chLocal <= '9') {
+                        intVal = intVal * 10 + (chLocal - '0');
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+
+                power = 1;
+                if (chLocal == '.') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= JSONLexer.this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+
+                    if (chLocal >= '0' && chLocal <= '9') {
+                        intVal = intVal * 10 + (chLocal - '0');
+                        power *= 10;
+                        for (; ; ) {
+                            // chLocal = charAt(bp + (offset++));
+                            charIndex = bp + (offset++);
+                            chLocal = charIndex >= JSONLexer.this.len ? //
+                                    EOI //
+                                    : text.charAt(charIndex);
+
+                            if (chLocal >= '0' && chLocal <= '9') {
+                                intVal = intVal * 10 + (chLocal - '0');
+                                power *= 10;
+                                continue;
+                            } else {
+                                break;
+                            }
+                        }
+                    } else {
+                        matchStat = NOT_MATCH;
+                        myResult = true;
+                    }
+                }
+                if (myResult) break marked;
+
+                exp = chLocal == 'e' || chLocal == 'E';
+                if (exp) {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= JSONLexer.this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                    if (chLocal == '+' || chLocal == '-') {
+                        // chLocal = charAt(bp + (offset++));
+                        charIndex = bp + (offset++);
+                        chLocal = charIndex >= JSONLexer.this.len ? //
+                                EOI //
+                                : text.charAt(charIndex);
+                    }
+                    for (; ; ) {
+                        if (chLocal >= '0' && chLocal <= '9') {
+                            // chLocal = charAt(bp + (offset++));
+                            charIndex = bp + (offset++);
+                            chLocal = charIndex >= JSONLexer.this.len ? //
+                                    EOI //
+                                    : text.charAt(charIndex);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                count = bp + offset - start - 1;
+                if (!exp && count < 10) {
+                } else {
+                    text2 = JSONLexer.this.subString(start, count);
+                }
+
+                if (chLocal == ',') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= JSONLexer.this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                } else if (chLocal == ']') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= JSONLexer.this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                    shouldBreak = true;
+                }
+            }
         }
     }
 }

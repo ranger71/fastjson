@@ -4362,14 +4362,17 @@ public final class JSONLexer {
                 }
             }
 
-            // compact
+            fixArrayLength();
+            myResult = false;
+            return this;
+        }
+
+        protected void fixArrayLength() {
             if (arrayIndex != array.length) {
                 double[] tmp = new double[arrayIndex];
                 System.arraycopy(array, 0, tmp, 0, arrayIndex);
                 array = tmp;
             }
-            myResult = false;
-            return this;
         }
 
         protected void after(boolean negative) {
@@ -4567,15 +4570,17 @@ public final class JSONLexer {
                     return this;
                 }
             }
+            fixArrayLength();
+            myResult = false;
+            return this;
+        }
 
-            // compact
+        protected void fixArrayLength() {
             if (arrayIndex != array.length) {
                 float[] tmp = new float[arrayIndex];
                 System.arraycopy(array, 0, tmp, 0, arrayIndex);
                 array = tmp;
             }
-            myResult = false;
-            return this;
         }
 
         protected void after(boolean negative) {

@@ -4296,11 +4296,17 @@ public final class JSONLexer {
     }
 
     private class Clones4and5 {
-        private boolean myResult;
+        protected boolean myResult;
         private int offset;
-        private char chLocal;
+        protected char chLocal;
+        protected boolean shouldBreak;
+        protected int count;
+        protected int intVal;
+        protected int power;
+        protected String text2;
+        protected boolean exp;
+        protected int arrayIndex;
         private double[] array;
-        private int arrayIndex;
 
         public Clones4and5(int offset, char chLocal, double[] array, int arrayIndex) {
             this.offset = offset;
@@ -4344,10 +4350,7 @@ public final class JSONLexer {
 
                 if (chLocal >= '0' && chLocal <= '9') {
                     myResult = false;
-                    boolean shouldBreak = false;
-                    int count = 0, intVal = 0, power = 0;
-                    String text2 = null;
-                    boolean exp = false;
+                    shouldBreak = false;
                     marked:
                     {
                         intVal = chLocal - '0';
@@ -4488,11 +4491,17 @@ public final class JSONLexer {
     }
 
     private class Clones6and7 {
-        private boolean myResult;
+        protected boolean myResult;
         private int offset;
-        private char chLocal;
+        protected char chLocal;
+        protected boolean shouldBreak;
+        protected int count;
+        protected int intVal;
+        protected int power;
+        protected String text2;
+        protected boolean exp;
+        protected int arrayIndex;
         private float[] array;
-        private int arrayIndex;
 
         public Clones6and7(int offset, char chLocal, float[] array, int arrayIndex) {
             this.offset = offset;
@@ -4536,10 +4545,7 @@ public final class JSONLexer {
 
                 if (chLocal >= '0' && chLocal <= '9') {
                     myResult = false;
-                    boolean shouldBreak = false;
-                    int count = 0, intVal = 0, power = 0;
-                    String text2 = null;
-                    boolean exp = false;
+                    shouldBreak = false;
                     marked:
                     {
                         intVal = chLocal - '0';

@@ -3092,7 +3092,7 @@ public final class JSONLexer {
         float[] array = new float[16];
         int arrayIndex = 0;
 
-        Clones6and7 clone6 = new Clones6and7(offset, chLocal, array, arrayIndex).invoke();
+        Clones6and7 clone6 = new Clones6and7(this, offset, chLocal, array, arrayIndex).invoke();
         if (clone6.is()) return null;
         chLocal = clone6.getChLocal();
         offset = clone6.getOffset();
@@ -3177,7 +3177,7 @@ public final class JSONLexer {
                 float[] array = new float[16];
                 int arrayIndex = 0;
 
-                Clones6and7 clone7 = new Clones6and7(offset, chLocal, array, arrayIndex).invoke();
+                Clones6and7 clone7 = new Clones6and7(this, offset, chLocal, array, arrayIndex).invoke();
                 if (clone7.is()) return null;
                 array = clone7.getArray();
                 arrayIndex = clone7.getArrayIndex();
@@ -3399,7 +3399,7 @@ public final class JSONLexer {
         double[] array = new double[16];
         int arrayIndex = 0;
 
-        Clones4and5 clone4 = new Clones4and5(offset, chLocal, array, arrayIndex).invoke();
+        Clones4and5 clone4 = new Clones4and5(this, offset, chLocal, array, arrayIndex).invoke();
         if (clone4.is()) return null;
         chLocal = clone4.getChLocal();
         offset = clone4.getOffset();
@@ -3484,7 +3484,7 @@ public final class JSONLexer {
                 double[] array = new double[16];
                 int arrayIndex = 0;
 
-                Clones4and5 clone5 = new Clones4and5(offset, chLocal, array, arrayIndex).invoke();
+                Clones4and5 clone5 = new Clones4and5(this, offset, chLocal, array, arrayIndex).invoke();
                 if (clone5.is()) return null;
                 array = clone5.getArray();
                 arrayIndex = clone5.getArrayIndex();
@@ -4295,7 +4295,7 @@ public final class JSONLexer {
         }
     }
 
-    private class Clones4and5 {
+    private static class Clones4and5 {
         protected boolean myResult;
         private int offset;
         protected char chLocal;
@@ -4307,12 +4307,14 @@ public final class JSONLexer {
         protected boolean exp;
         protected int arrayIndex;
         private double[] array;
+        private JSONLexer jsonLexer;
 
-        public Clones4and5(int offset, char chLocal, double[] array, int arrayIndex) {
+        public Clones4and5(JSONLexer jsonLexer, int offset, char chLocal, double[] array, int arrayIndex) {
             this.offset = offset;
             this.chLocal = chLocal;
             this.array = array;
             this.arrayIndex = arrayIndex;
+            this.jsonLexer = jsonLexer;
         }
 
         boolean is() {
@@ -4338,14 +4340,14 @@ public final class JSONLexer {
         public Clones4and5 invoke() {
             int charIndex;
             for (; ; ) {
-                int start = bp + offset - 1;
+                int start = jsonLexer.bp + offset - 1;
                 boolean negative = chLocal == '-';
                 if (negative) {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
                 }
 
                 if (chLocal >= '0' && chLocal <= '9') {
@@ -4354,7 +4356,7 @@ public final class JSONLexer {
                     if (myResult) return this;
                     if (shouldBreak) break;
                 } else {
-                    matchStat = NOT_MATCH;
+                    jsonLexer.matchStat = NOT_MATCH;
                     myResult = true;
                     return this;
                 }
@@ -4403,10 +4405,10 @@ public final class JSONLexer {
                 intVal = chLocal - '0';
                 for (; ; ) {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
 
                     if (chLocal >= '0' && chLocal <= '9') {
                         intVal = intVal * 10 + (chLocal - '0');
@@ -4419,20 +4421,20 @@ public final class JSONLexer {
                 power = 1;
                 if (chLocal == '.') {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
 
                     if (chLocal >= '0' && chLocal <= '9') {
                         intVal = intVal * 10 + (chLocal - '0');
                         power *= 10;
                         for (; ; ) {
                             // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
+                            charIndex = jsonLexer.bp + (offset++);
+                            chLocal = charIndex >= jsonLexer.len ? //
                                     EOI //
-                                    : text.charAt(charIndex);
+                                    : jsonLexer.text.charAt(charIndex);
 
                             if (chLocal >= '0' && chLocal <= '9') {
                                 intVal = intVal * 10 + (chLocal - '0');
@@ -4443,7 +4445,7 @@ public final class JSONLexer {
                             }
                         }
                     } else {
-                        matchStat = NOT_MATCH;
+                        jsonLexer.matchStat = NOT_MATCH;
                         myResult = true;
                     }
                 }
@@ -4451,55 +4453,55 @@ public final class JSONLexer {
                 exp = chLocal == 'e' || chLocal == 'E';
                 if (exp) {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
                     if (chLocal == '+' || chLocal == '-') {
                         // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= JSONLexer.this.len ? //
+                        charIndex = jsonLexer.bp + (offset++);
+                        chLocal = charIndex >= jsonLexer.len ? //
                                 EOI //
-                                : text.charAt(charIndex);
+                                : jsonLexer.text.charAt(charIndex);
                     }
                     for (; ; ) {
                         if (chLocal >= '0' && chLocal <= '9') {
                             // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
+                            charIndex = jsonLexer.bp + (offset++);
+                            chLocal = charIndex >= jsonLexer.len ? //
                                     EOI //
-                                    : text.charAt(charIndex);
+                                    : jsonLexer.text.charAt(charIndex);
                         } else {
                             break;
                         }
                     }
                 }
 
-                count = bp + offset - start - 1;
+                count = jsonLexer.bp + offset - start - 1;
                 if (!exp && count < 10) {
                 } else {
-                    text2 = JSONLexer.this.subString(start, count);
+                    text2 = jsonLexer.subString(start, count);
                 }
 
                 if (chLocal == ',') {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
                 } else if (chLocal == ']') {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
                     shouldBreak = true;
                 }
             }
         }
     }
 
-    private class Clones6and7 {
+    private static class Clones6and7 {
         protected boolean myResult;
         private int offset;
         protected char chLocal;
@@ -4511,12 +4513,14 @@ public final class JSONLexer {
         protected boolean exp;
         protected int arrayIndex;
         private float[] array;
+        private JSONLexer jsonLexer;
 
-        public Clones6and7(int offset, char chLocal, float[] array, int arrayIndex) {
+        public Clones6and7(JSONLexer jsonLexer, int offset, char chLocal, float[] array, int arrayIndex) {
             this.offset = offset;
             this.chLocal = chLocal;
             this.array = array;
             this.arrayIndex = arrayIndex;
+            this.jsonLexer = jsonLexer;
         }
 
         boolean is() {
@@ -4542,14 +4546,14 @@ public final class JSONLexer {
         public Clones6and7 invoke() {
             int charIndex;
             for (; ; ) {
-                int start = bp + offset - 1;
+                int start = jsonLexer.bp + offset - 1;
                 boolean negative = chLocal == '-';
                 if (negative) {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
                 }
 
                 if (chLocal >= '0' && chLocal <= '9') {
@@ -4558,7 +4562,7 @@ public final class JSONLexer {
                     if (myResult) return this;
                     if (shouldBreak) break;
                 } else {
-                    matchStat = NOT_MATCH;
+                    jsonLexer.matchStat = NOT_MATCH;
                     myResult = true;
                     return this;
                 }
@@ -4606,10 +4610,10 @@ public final class JSONLexer {
                 intVal = chLocal - '0';
                 for (; ; ) {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
 
                     if (chLocal >= '0' && chLocal <= '9') {
                         intVal = intVal * 10 + (chLocal - '0');
@@ -4622,20 +4626,20 @@ public final class JSONLexer {
                 power = 1;
                 if (chLocal == '.') {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
 
                     if (chLocal >= '0' && chLocal <= '9') {
                         intVal = intVal * 10 + (chLocal - '0');
                         power *= 10;
                         for (; ; ) {
                             // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
+                            charIndex = jsonLexer.bp + (offset++);
+                            chLocal = charIndex >= jsonLexer.len ? //
                                     EOI //
-                                    : text.charAt(charIndex);
+                                    : jsonLexer.text.charAt(charIndex);
 
                             if (chLocal >= '0' && chLocal <= '9') {
                                 intVal = intVal * 10 + (chLocal - '0');
@@ -4646,7 +4650,7 @@ public final class JSONLexer {
                             }
                         }
                     } else {
-                        matchStat = NOT_MATCH;
+                        jsonLexer.matchStat = NOT_MATCH;
                         myResult = true;
                     }
                 }
@@ -4655,48 +4659,48 @@ public final class JSONLexer {
                 exp = chLocal == 'e' || chLocal == 'E';
                 if (exp) {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
                     if (chLocal == '+' || chLocal == '-') {
                         // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= JSONLexer.this.len ? //
+                        charIndex = jsonLexer.bp + (offset++);
+                        chLocal = charIndex >= jsonLexer.len ? //
                                 EOI //
-                                : text.charAt(charIndex);
+                                : jsonLexer.text.charAt(charIndex);
                     }
                     for (; ; ) {
                         if (chLocal >= '0' && chLocal <= '9') {
                             // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= JSONLexer.this.len ? //
+                            charIndex = jsonLexer.bp + (offset++);
+                            chLocal = charIndex >= jsonLexer.len ? //
                                     EOI //
-                                    : text.charAt(charIndex);
+                                    : jsonLexer.text.charAt(charIndex);
                         } else {
                             break;
                         }
                     }
                 }
 
-                count = bp + offset - start - 1;
+                count = jsonLexer.bp + offset - start - 1;
                 if (!exp && count < 10) {
                 } else {
-                    text2 = JSONLexer.this.subString(start, count);
+                    text2 = jsonLexer.subString(start, count);
                 }
 
                 if (chLocal == ',') {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
                 } else if (chLocal == ']') {
                     // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= JSONLexer.this.len ? //
+                    charIndex = jsonLexer.bp + (offset++);
+                    chLocal = charIndex >= jsonLexer.len ? //
                             EOI //
-                            : text.charAt(charIndex);
+                            : jsonLexer.text.charAt(charIndex);
                     shouldBreak = true;
                 }
             }

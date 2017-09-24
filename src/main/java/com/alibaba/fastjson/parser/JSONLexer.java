@@ -3825,7 +3825,6 @@ public final class JSONLexer {
             boolean shouldBreak;
             marked1:
             {
-                shouldBreak = false;
                 if (chLocal == ',') {
                     bp += (offset - 1);
                     this.next();

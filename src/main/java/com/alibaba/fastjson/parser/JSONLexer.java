@@ -3230,26 +3230,29 @@ public final class JSONLexer {
         block:
         {
             boolean shouldBreak;
-            block1:
+            marked1:
             {
-                shouldBreak = false;
                 if (chLocal == ',') {
                     bp += (offset - 1);
                     this.next();
                     matchStat = VALUE;
                     token = JSONToken.COMMA;
+                }
+            }
+            after1:
+            {
+                shouldBreak = false;
+                if (chLocal == ',') {
                     result = array;
                     shouldBreak = true;
-                    break block1;
                 }
             }
             if (shouldBreak) break block;
 
             if (chLocal == '}') {
                 // chLocal = charAt(bp + (offset++));
-                block2:
+                marked2:
                 {
-                    shouldBreak = false;
                     charIndex = bp + (offset++);
                     chLocal = charIndex >= this.len ? //
                             EOI //
@@ -3272,11 +3275,21 @@ public final class JSONLexer {
                         ch = EOI;
                     } else {
                         matchStat = NOT_MATCH;
-                        result = null;
-                        shouldBreak = true;
-                        break block2;
+                        break marked2;
                     }
                     matchStat = END;
+                }
+                after2:
+                {
+                    shouldBreak = false;
+                    if (chLocal == ',') {
+                    } else if (chLocal == ']') {
+                    } else if (chLocal == '}') {
+                    } else if (chLocal == EOI) {
+                    } else {
+                        result = null;
+                        shouldBreak = true;
+                    }
                 }
                 if (shouldBreak) break block;
             } else {
@@ -3810,7 +3823,7 @@ public final class JSONLexer {
         block:
         {
             boolean shouldBreak;
-            block1:
+            marked1:
             {
                 shouldBreak = false;
                 if (chLocal == ',') {
@@ -3818,17 +3831,21 @@ public final class JSONLexer {
                     this.next();
                     matchStat = VALUE;
                     token = JSONToken.COMMA;
+                }
+            }
+            after1:
+            {
+                shouldBreak = false;
+                if (chLocal == ',') {
                     result = array;
                     shouldBreak = true;
-                    break block1;
                 }
             }
             if (shouldBreak) break block;
             if (chLocal == '}') {
                 // chLocal = charAt(bp + (offset++));
-                block2:
+                marked2:
                 {
-                    shouldBreak = false;
                     charIndex = bp + (offset++);
                     chLocal = charIndex >= this.len ? //
                             EOI //
@@ -3851,11 +3868,21 @@ public final class JSONLexer {
                         ch = EOI;
                     } else {
                         matchStat = NOT_MATCH;
-                        result = null;
-                        shouldBreak = true;
-                        break block2;
+                        break marked2;
                     }
                     matchStat = END;
+                }
+                after2:
+                {
+                    shouldBreak = false;
+                    if (chLocal == ',') {
+                    } else if (chLocal == ']') {
+                    } else if (chLocal == '}') {
+                    } else if (chLocal == EOI) {
+                    } else {
+                        result = null;
+                        shouldBreak = true;
+                    }
                 }
                 if (shouldBreak) break block;
             } else {

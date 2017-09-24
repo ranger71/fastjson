@@ -3226,46 +3226,59 @@ public final class JSONLexer {
             array = tmp;
         }
 
-        float[] result;
+        float[] result = null;
         block:
         {
-            if (chLocal == ',') {
-                bp += (offset - 1);
-                this.next();
-                matchStat = VALUE;
-                token = JSONToken.COMMA;
-                result = array;
-                break block;
+            boolean shouldBreak;
+            block1:
+            {
+                shouldBreak = false;
+                if (chLocal == ',') {
+                    bp += (offset - 1);
+                    this.next();
+                    matchStat = VALUE;
+                    token = JSONToken.COMMA;
+                    result = array;
+                    shouldBreak = true;
+                    break block1;
+                }
             }
+            if (shouldBreak) break block;
 
             if (chLocal == '}') {
                 // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal == ',') {
-                    token = JSONToken.COMMA;
-                    bp += (offset - 1);
-                    this.next();
-                } else if (chLocal == ']') {
-                    token = JSONToken.RBRACKET;
-                    bp += (offset - 1);
-                    this.next();
-                } else if (chLocal == '}') {
-                    token = JSONToken.RBRACE;
-                    bp += (offset - 1);
-                    this.next();
-                } else if (chLocal == EOI) {
-                    bp += (offset - 1);
-                    token = JSONToken.EOF;
-                    ch = EOI;
-                } else {
-                    matchStat = NOT_MATCH;
-                    result = null;
-                    break block;
+                block2:
+                {
+                    shouldBreak = false;
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                    if (chLocal == ',') {
+                        token = JSONToken.COMMA;
+                        bp += (offset - 1);
+                        this.next();
+                    } else if (chLocal == ']') {
+                        token = JSONToken.RBRACKET;
+                        bp += (offset - 1);
+                        this.next();
+                    } else if (chLocal == '}') {
+                        token = JSONToken.RBRACE;
+                        bp += (offset - 1);
+                        this.next();
+                    } else if (chLocal == EOI) {
+                        bp += (offset - 1);
+                        token = JSONToken.EOF;
+                        ch = EOI;
+                    } else {
+                        matchStat = NOT_MATCH;
+                        result = null;
+                        shouldBreak = true;
+                        break block2;
+                    }
+                    matchStat = END;
                 }
-                matchStat = END;
+                if (shouldBreak) break block;
             } else {
                 matchStat = NOT_MATCH;
                 result = null;
@@ -3793,46 +3806,58 @@ public final class JSONLexer {
             System.arraycopy(array, 0, tmp, 0, arrayIndex);
             array = tmp;
         }
-        double[] result;
+        double[] result = null;
         block:
         {
-            if (chLocal == ',') {
-                bp += (offset - 1);
-                this.next();
-                matchStat = VALUE;
-                token = JSONToken.COMMA;
-                result = array;
-                break block;
+            boolean shouldBreak;
+            block1:
+            {
+                shouldBreak = false;
+                if (chLocal == ',') {
+                    bp += (offset - 1);
+                    this.next();
+                    matchStat = VALUE;
+                    token = JSONToken.COMMA;
+                    result = array;
+                    shouldBreak = true;
+                    break block1;
+                }
             }
-
+            if (shouldBreak) break block;
             if (chLocal == '}') {
                 // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal == ',') {
-                    token = JSONToken.COMMA;
-                    bp += (offset - 1);
-                    this.next();
-                } else if (chLocal == ']') {
-                    token = JSONToken.RBRACKET;
-                    bp += (offset - 1);
-                    this.next();
-                } else if (chLocal == '}') {
-                    token = JSONToken.RBRACE;
-                    bp += (offset - 1);
-                    this.next();
-                } else if (chLocal == EOI) {
-                    bp += (offset - 1);
-                    token = JSONToken.EOF;
-                    ch = EOI;
-                } else {
-                    matchStat = NOT_MATCH;
-                    result = null;
-                    break block;
+                block2:
+                {
+                    shouldBreak = false;
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                    if (chLocal == ',') {
+                        token = JSONToken.COMMA;
+                        bp += (offset - 1);
+                        this.next();
+                    } else if (chLocal == ']') {
+                        token = JSONToken.RBRACKET;
+                        bp += (offset - 1);
+                        this.next();
+                    } else if (chLocal == '}') {
+                        token = JSONToken.RBRACE;
+                        bp += (offset - 1);
+                        this.next();
+                    } else if (chLocal == EOI) {
+                        bp += (offset - 1);
+                        token = JSONToken.EOF;
+                        ch = EOI;
+                    } else {
+                        matchStat = NOT_MATCH;
+                        result = null;
+                        shouldBreak = true;
+                        break block2;
+                    }
+                    matchStat = END;
                 }
-                matchStat = END;
+                if (shouldBreak) break block;
             } else {
                 matchStat = NOT_MATCH;
                 result = null;

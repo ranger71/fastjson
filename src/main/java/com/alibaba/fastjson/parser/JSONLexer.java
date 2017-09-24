@@ -3092,7 +3092,7 @@ public final class JSONLexer {
         float[] array = new float[16];
         int arrayIndex = 0;
 
-        for (;;) {
+        for (; ; ) {
             int start = bp + offset - 1;
 
             boolean negative = chLocal == '-';
@@ -3166,7 +3166,7 @@ public final class JSONLexer {
                                 EOI //
                                 : text.charAt(charIndex);
                     }
-                    for (;;) {
+                    for (; ; ) {
                         if (chLocal >= '0' && chLocal <= '9') {
                             // chLocal = charAt(bp + (offset++));
                             charIndex = bp + (offset++);
@@ -3226,47 +3226,54 @@ public final class JSONLexer {
             array = tmp;
         }
 
-        if (chLocal == ',') {
-            bp += (offset - 1);
-            this.next();
-            matchStat = VALUE;
-            token = JSONToken.COMMA;
-            return array;
-        }
-
-        if (chLocal == '}') {
-            // chLocal = charAt(bp + (offset++));
-            charIndex = bp + (offset++);
-            chLocal = charIndex >= this.len ? //
-                    EOI //
-                    : text.charAt(charIndex);
+        float[] result;
+        block:
+        {
             if (chLocal == ',') {
+                bp += (offset - 1);
+                this.next();
+                matchStat = VALUE;
                 token = JSONToken.COMMA;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == EOI) {
-                bp += (offset - 1);
-                token = JSONToken.EOF;
-                ch = EOI;
+                result = array;
+                break block;
+            }
+
+            if (chLocal == '}') {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                if (chLocal == ',') {
+                    token = JSONToken.COMMA;
+                    bp += (offset - 1);
+                    this.next();
+                } else if (chLocal == ']') {
+                    token = JSONToken.RBRACKET;
+                    bp += (offset - 1);
+                    this.next();
+                } else if (chLocal == '}') {
+                    token = JSONToken.RBRACE;
+                    bp += (offset - 1);
+                    this.next();
+                } else if (chLocal == EOI) {
+                    bp += (offset - 1);
+                    token = JSONToken.EOF;
+                    ch = EOI;
+                } else {
+                    matchStat = NOT_MATCH;
+                    result = null;
+                    break block;
+                }
+                matchStat = END;
             } else {
                 matchStat = NOT_MATCH;
-                return null;
+                result = null;
+                break block;
             }
-            matchStat = END;
-        } else {
-            matchStat = NOT_MATCH;
-            return null;
+            result = array;
         }
-
-        return array;
+        return result;
     }
 
     public final float[][] scanFieldFloatArray2(long fieldHashCode) {
@@ -3786,48 +3793,55 @@ public final class JSONLexer {
             System.arraycopy(array, 0, tmp, 0, arrayIndex);
             array = tmp;
         }
-
-        if (chLocal == ',') {
-            bp += (offset - 1);
-            this.next();
-            matchStat = VALUE;
-            token = JSONToken.COMMA;
-            return array;
-        }
-
-        if (chLocal == '}') {
-            // chLocal = charAt(bp + (offset++));
-            charIndex = bp + (offset++);
-            chLocal = charIndex >= this.len ? //
-                    EOI //
-                    : text.charAt(charIndex);
+        double[] result;
+        block:
+        {
             if (chLocal == ',') {
+                bp += (offset - 1);
+                this.next();
+                matchStat = VALUE;
                 token = JSONToken.COMMA;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == EOI) {
-                bp += (offset - 1);
-                token = JSONToken.EOF;
-                ch = EOI;
+                result = array;
+                break block;
+            }
+
+            if (chLocal == '}') {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                if (chLocal == ',') {
+                    token = JSONToken.COMMA;
+                    bp += (offset - 1);
+                    this.next();
+                } else if (chLocal == ']') {
+                    token = JSONToken.RBRACKET;
+                    bp += (offset - 1);
+                    this.next();
+                } else if (chLocal == '}') {
+                    token = JSONToken.RBRACE;
+                    bp += (offset - 1);
+                    this.next();
+                } else if (chLocal == EOI) {
+                    bp += (offset - 1);
+                    token = JSONToken.EOF;
+                    ch = EOI;
+                } else {
+                    matchStat = NOT_MATCH;
+                    result = null;
+                    break block;
+                }
+                matchStat = END;
             } else {
                 matchStat = NOT_MATCH;
-                return null;
+                result = null;
+                break block;
             }
-            matchStat = END;
-        } else {
-            matchStat = NOT_MATCH;
-            return null;
-        }
 
-        return array;
+            result = array;
+        }
+        return result;
     }
 
     public final double[][] scanFieldDoubleArray2(long fieldHashCode) {

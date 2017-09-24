@@ -3230,15 +3230,7 @@ public final class JSONLexer {
         block:
         {
             boolean shouldBreak;
-            marked1:
-            {
-                if (chLocal == ',') {
-                    bp += (offset - 1);
-                    this.next();
-                    matchStat = VALUE;
-                    token = JSONToken.COMMA;
-                }
-            }
+            clones20and21a(offset, chLocal);
             after1:
             {
                 shouldBreak = false;
@@ -3251,34 +3243,7 @@ public final class JSONLexer {
 
             if (chLocal == '}') {
                 // chLocal = charAt(bp + (offset++));
-                marked2:
-                {
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= this.len ? //
-                            EOI //
-                            : text.charAt(charIndex);
-                    if (chLocal == ',') {
-                        token = JSONToken.COMMA;
-                        bp += (offset - 1);
-                        this.next();
-                    } else if (chLocal == ']') {
-                        token = JSONToken.RBRACKET;
-                        bp += (offset - 1);
-                        this.next();
-                    } else if (chLocal == '}') {
-                        token = JSONToken.RBRACE;
-                        bp += (offset - 1);
-                        this.next();
-                    } else if (chLocal == EOI) {
-                        bp += (offset - 1);
-                        token = JSONToken.EOF;
-                        ch = EOI;
-                    } else {
-                        matchStat = NOT_MATCH;
-                        break marked2;
-                    }
-                    matchStat = END;
-                }
+                chLocal = clones20and21b(offset);
                 after2:
                 {
                     shouldBreak = false;
@@ -3300,6 +3265,15 @@ public final class JSONLexer {
             result = array;
         }
         return result;
+    }
+
+    protected void clones20and21a(int offset, char chLocal) {
+        if (chLocal == ',') {
+            bp += (offset - 1);
+            this.next();
+            matchStat = VALUE;
+            token = JSONToken.COMMA;
+        }
     }
 
     public final float[][] scanFieldFloatArray2(long fieldHashCode) {
@@ -3823,15 +3797,7 @@ public final class JSONLexer {
         block:
         {
             boolean shouldBreak;
-            marked1:
-            {
-                if (chLocal == ',') {
-                    bp += (offset - 1);
-                    this.next();
-                    matchStat = VALUE;
-                    token = JSONToken.COMMA;
-                }
-            }
+            clones20and21a(offset, chLocal);
             after1:
             {
                 shouldBreak = false;
@@ -3843,34 +3809,7 @@ public final class JSONLexer {
             if (shouldBreak) break block;
             if (chLocal == '}') {
                 // chLocal = charAt(bp + (offset++));
-                marked2:
-                {
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= this.len ? //
-                            EOI //
-                            : text.charAt(charIndex);
-                    if (chLocal == ',') {
-                        token = JSONToken.COMMA;
-                        bp += (offset - 1);
-                        this.next();
-                    } else if (chLocal == ']') {
-                        token = JSONToken.RBRACKET;
-                        bp += (offset - 1);
-                        this.next();
-                    } else if (chLocal == '}') {
-                        token = JSONToken.RBRACE;
-                        bp += (offset - 1);
-                        this.next();
-                    } else if (chLocal == EOI) {
-                        bp += (offset - 1);
-                        token = JSONToken.EOF;
-                        ch = EOI;
-                    } else {
-                        matchStat = NOT_MATCH;
-                        break marked2;
-                    }
-                    matchStat = END;
-                }
+                chLocal = clones20and21b(offset);
                 after2:
                 {
                     shouldBreak = false;
@@ -3893,6 +3832,40 @@ public final class JSONLexer {
             result = array;
         }
         return result;
+    }
+
+    protected char clones20and21b(int offset) {
+        int charIndex;
+        char chLocal;
+        marked2:
+        {
+            charIndex = bp + (offset++);
+            chLocal = charIndex >= this.len ? //
+                    EOI //
+                    : text.charAt(charIndex);
+            if (chLocal == ',') {
+                token = JSONToken.COMMA;
+                bp += (offset - 1);
+                this.next();
+            } else if (chLocal == ']') {
+                token = JSONToken.RBRACKET;
+                bp += (offset - 1);
+                this.next();
+            } else if (chLocal == '}') {
+                token = JSONToken.RBRACE;
+                bp += (offset - 1);
+                this.next();
+            } else if (chLocal == EOI) {
+                bp += (offset - 1);
+                token = JSONToken.EOF;
+                ch = EOI;
+            } else {
+                matchStat = NOT_MATCH;
+                break marked2;
+            }
+            matchStat = END;
+        }
+        return chLocal;
     }
 
     public final double[][] scanFieldDoubleArray2(long fieldHashCode) {

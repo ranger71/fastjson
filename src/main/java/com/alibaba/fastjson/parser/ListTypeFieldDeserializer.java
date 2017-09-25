@@ -86,7 +86,6 @@ class ListTypeFieldDeserializer extends FieldDeserializer {
             if (itemType instanceof TypeVariable) {
                 TypeVariable typeVar = (TypeVariable) itemType;
                 ParameterizedType paramType = (ParameterizedType) objectType;
-
                 int paramIndex = getParamIndex(typeVar, paramType);
 
                 if (paramIndex != -1) {
@@ -101,7 +100,6 @@ class ListTypeFieldDeserializer extends FieldDeserializer {
                 if (itemActualTypeArgs.length == 1 && itemActualTypeArgs[0] instanceof TypeVariable) {
                     TypeVariable typeVar = (TypeVariable) itemActualTypeArgs[0];
                     ParameterizedType paramType = (ParameterizedType) objectType;
-
                     int paramIndex = getParamIndex(typeVar, paramType);
 
                     if (paramIndex != -1) {

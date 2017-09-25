@@ -3226,45 +3226,22 @@ public final class JSONLexer {
             array = tmp;
         }
 
-        float[] result = null;
-        block:
-        {
-            boolean shouldBreak;
-            clones20and21a(offset, chLocal);
-            after1:
-            {
-                shouldBreak = false;
-                if (chLocal == ',') {
-                    result = array;
-                    shouldBreak = true;
-                }
-            }
-            if (shouldBreak) break block;
-
-            if (chLocal == '}') {
-                // chLocal = charAt(bp + (offset++));
-                chLocal = clones20and21b(offset);
-                after2:
-                {
-                    shouldBreak = false;
-                    if (chLocal == ',') {
-                    } else if (chLocal == ']') {
-                    } else if (chLocal == '}') {
-                    } else if (chLocal == EOI) {
-                    } else {
-                        result = null;
-                        shouldBreak = true;
-                    }
-                }
-                if (shouldBreak) break block;
-            } else {
-                matchStat = NOT_MATCH;
-                result = null;
-                break block;
-            }
-            result = array;
+        clones20and21a(offset, chLocal);
+        if (chLocal == ',') {
+            return array;
         }
-        return result;
+
+        if (chLocal == '}') {
+            // chLocal = charAt(bp + (offset++));
+            chLocal = clones20and21b(offset);
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
+                return null;
+            }
+        } else {
+            matchStat = NOT_MATCH;
+            return null;
+        }
+        return array;
     }
 
     protected void clones20and21a(int offset, char chLocal) {
@@ -3793,78 +3770,49 @@ public final class JSONLexer {
             System.arraycopy(array, 0, tmp, 0, arrayIndex);
             array = tmp;
         }
-        double[] result = null;
-        block:
-        {
-            boolean shouldBreak;
-            clones20and21a(offset, chLocal);
-            after1:
-            {
-                shouldBreak = false;
-                if (chLocal == ',') {
-                    result = array;
-                    shouldBreak = true;
-                }
-            }
-            if (shouldBreak) break block;
-            if (chLocal == '}') {
-                // chLocal = charAt(bp + (offset++));
-                chLocal = clones20and21b(offset);
-                after2:
-                {
-                    shouldBreak = false;
-                    if (chLocal == ',') {
-                    } else if (chLocal == ']') {
-                    } else if (chLocal == '}') {
-                    } else if (chLocal == EOI) {
-                    } else {
-                        result = null;
-                        shouldBreak = true;
-                    }
-                }
-                if (shouldBreak) break block;
-            } else {
-                matchStat = NOT_MATCH;
-                result = null;
-                break block;
-            }
-
-            result = array;
+        clones20and21a(offset, chLocal);
+        if (chLocal == ',') {
+            return array;
         }
-        return result;
+        if (chLocal == '}') {
+            // chLocal = charAt(bp + (offset++));
+            chLocal = clones20and21b(offset);
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
+                return null;
+            }
+        } else {
+            matchStat = NOT_MATCH;
+            return null;
+        }
+        return array;
     }
 
     protected char clones20and21b(int offset) {
-        int charIndex;
-        char chLocal;
-        marked2:
-        {
-            charIndex = bp + (offset++);
-            chLocal = charIndex >= this.len ? //
-                    EOI //
-                    : text.charAt(charIndex);
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == EOI) {
-                bp += (offset - 1);
-                token = JSONToken.EOF;
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
-                break marked2;
-            }
-            matchStat = END;
+        int charIndex = bp + (offset++);
+        char chLocal = charIndex >= this.len ? //
+                EOI //
+                : text.charAt(charIndex);
+        if (chLocal == ',') {
+            token = JSONToken.COMMA;
+            bp += (offset - 1);
+            this.next();
+        } else if (chLocal == ']') {
+            token = JSONToken.RBRACKET;
+            bp += (offset - 1);
+            this.next();
+        } else if (chLocal == '}') {
+            token = JSONToken.RBRACE;
+            bp += (offset - 1);
+            this.next();
+        } else if (chLocal == EOI) {
+            bp += (offset - 1);
+            token = JSONToken.EOF;
+            ch = EOI;
+        } else {
+            matchStat = NOT_MATCH;
+            return chLocal;
         }
+        matchStat = END;
         return chLocal;
     }
 

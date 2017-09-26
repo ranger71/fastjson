@@ -4125,61 +4125,48 @@ public final class JSONLexer {
             return hash;
         }
 
-        boolean shouldReturn = false;
         char prevChLocal = chLocal;
         chLocal = finalizeScan(offset, chLocal);
-        block:
-        {
-            if (prevChLocal == '}') {
-                if (chLocal == ',') {
-                } else if (chLocal == ']') {
-                } else if (chLocal == '}') {
-                } else if (chLocal == EOI) {
-                } else {
-                    shouldReturn = true;
-                    break block;
-                }
-            } else {
-                shouldReturn = true;
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
+                return 0;
             }
+        } else {
+            return 0;
         }
-        if (shouldReturn) return 0;
         return hash;
     }
 
     protected char finalizeScan(int offset, char chLocal) {
         int charIndex;
-        slice:
-        {
-            if (chLocal == '}') {
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal == ',') {
-                    token = JSONToken.COMMA;
-                    bp += (offset - 1);
-                    this.next();
-                } else if (chLocal == ']') {
-                    token = JSONToken.RBRACKET;
-                    bp += (offset - 1);
-                    this.next();
-                } else if (chLocal == '}') {
-                    token = JSONToken.RBRACE;
-                    bp += (offset - 1);
-                    this.next();
-                } else if (chLocal == EOI) {
-                    token = JSONToken.EOF;
-                    bp += (offset - 1);
-                    ch = EOI;
-                } else {
-                    matchStat = NOT_MATCH;
-                    break slice;
-                }
-                matchStat = END;
+        if (chLocal == '}') {
+            charIndex = bp + (offset++);
+            chLocal = charIndex >= this.len ? //
+                    EOI //
+                    : text.charAt(charIndex);
+            if (chLocal == ',') {
+                token = JSONToken.COMMA;
+                bp += (offset - 1);
+                this.next();
+            } else if (chLocal == ']') {
+                token = JSONToken.RBRACKET;
+                bp += (offset - 1);
+                this.next();
+            } else if (chLocal == '}') {
+                token = JSONToken.RBRACE;
+                bp += (offset - 1);
+                this.next();
+            } else if (chLocal == EOI) {
+                token = JSONToken.EOF;
+                bp += (offset - 1);
+                ch = EOI;
             } else {
                 matchStat = NOT_MATCH;
+                return chLocal;
             }
+            matchStat = END;
+        } else {
+            matchStat = NOT_MATCH;
         }
         return chLocal;
     }

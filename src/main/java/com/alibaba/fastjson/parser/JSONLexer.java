@@ -4125,37 +4125,42 @@ public final class JSONLexer {
             return hash;
         }
 
-        if (chLocal == '}') {
-            charIndex = bp + (offset++);
-            chLocal = charIndex >= this.len ? //
-                    EOI //
-                    : text.charAt(charIndex);
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == EOI) {
-                token = JSONToken.EOF;
-                bp += (offset - 1);
-                ch = EOI;
+        boolean shouldReturn = false;
+        block:
+        {
+            if (chLocal == '}') {
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                if (chLocal == ',') {
+                    token = JSONToken.COMMA;
+                    bp += (offset - 1);
+                    this.next();
+                } else if (chLocal == ']') {
+                    token = JSONToken.RBRACKET;
+                    bp += (offset - 1);
+                    this.next();
+                } else if (chLocal == '}') {
+                    token = JSONToken.RBRACE;
+                    bp += (offset - 1);
+                    this.next();
+                } else if (chLocal == EOI) {
+                    token = JSONToken.EOF;
+                    bp += (offset - 1);
+                    ch = EOI;
+                } else {
+                    matchStat = NOT_MATCH;
+                    shouldReturn = true;
+                    break block;
+                }
+                matchStat = END;
             } else {
                 matchStat = NOT_MATCH;
-                return 0;
+                shouldReturn = true;
             }
-            matchStat = END;
-        } else {
-            matchStat = NOT_MATCH;
-            return 0;
         }
-
+        if (shouldReturn) return 0;
         return hash;
     }
 

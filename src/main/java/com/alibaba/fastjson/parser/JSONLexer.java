@@ -4126,7 +4126,8 @@ public final class JSONLexer {
         }
 
         boolean shouldReturn = false;
-        block:
+        char prevChLocal = chLocal;
+        slice:
         {
             if (chLocal == '}') {
                 charIndex = bp + (offset++);
@@ -4151,12 +4152,25 @@ public final class JSONLexer {
                     ch = EOI;
                 } else {
                     matchStat = NOT_MATCH;
-                    shouldReturn = true;
-                    break block;
+                    break slice;
                 }
                 matchStat = END;
             } else {
                 matchStat = NOT_MATCH;
+            }
+        }
+        block:
+        {
+            if (prevChLocal == '}') {
+                if (chLocal == ',') {
+                } else if (chLocal == ']') {
+                } else if (chLocal == '}') {
+                } else if (chLocal == EOI) {
+                } else {
+                    shouldReturn = true;
+                    break block;
+                }
+            } else {
                 shouldReturn = true;
             }
         }

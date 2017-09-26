@@ -2226,49 +2226,13 @@ public final class JSONLexer {
             break;
         }
 
-        if (chLocal == '}') {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == EOI) {
-                token = JSONToken.EOF;
-                bp += (offset - 1);
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
                 return 0;
             }
-            matchStat = END;
         } else {
-            matchStat = NOT_MATCH;
             return 0;
         }
 
@@ -2377,31 +2341,13 @@ public final class JSONLexer {
             return array;
         }
 
-        if (chLocal == '}') {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == EOI) {
-                bp += (offset - 1);
-                token = JSONToken.EOF;
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
                 return null;
             }
-            matchStat = END;
         } else {
-            matchStat = NOT_MATCH;
             return null;
         }
 
@@ -2496,49 +2442,13 @@ public final class JSONLexer {
             return negative ? -value : value;
         }
 
-        if (chLocal == '}') {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == EOI) {
-                token = JSONToken.EOF;
-                bp += (offset - 1);
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
                 return 0;
             }
-            matchStat = END;
         } else {
-            matchStat = NOT_MATCH;
             return 0;
         }
 
@@ -2777,49 +2687,13 @@ public final class JSONLexer {
             return dateVal;
         }
 
-        if (chLocal == '}') {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == EOI) {
-                token = JSONToken.EOF;
-                bp += (offset - 1);
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
                 return null;
             }
-            matchStat = END;
         } else {
-            matchStat = NOT_MATCH;
             return null;
         }
 
@@ -2900,49 +2774,13 @@ public final class JSONLexer {
             break;
         }
 
-        if (chLocal == '}') {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                // this.next();
-                {
-                    int index = ++bp;
-                    this.ch = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-            } else if (chLocal == EOI) {
-                token = JSONToken.EOF;
-                bp += (offset - 1);
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
                 return false;
             }
-            matchStat = END;
         } else {
-            matchStat = NOT_MATCH;
             return false;
         }
 
@@ -3037,31 +2875,13 @@ public final class JSONLexer {
             return value;
         }
 
-        if (chLocal == '}') {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == EOI) {
-                bp += (offset - 1);
-                token = JSONToken.EOF;
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
                 return 0;
             }
-            matchStat = END;
         } else {
-            matchStat = NOT_MATCH;
             return 0;
         }
 
@@ -3234,35 +3054,13 @@ public final class JSONLexer {
             return array;
         }
 
-        if (chLocal == '}') {
-            // chLocal = charAt(bp + (offset++));
-            charIndex = bp + (offset++);
-            chLocal = charIndex >= this.len ? //
-                    EOI //
-                    : text.charAt(charIndex);
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == EOI) {
-                bp += (offset - 1);
-                token = JSONToken.EOF;
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
                 return null;
             }
-            matchStat = END;
         } else {
-            matchStat = NOT_MATCH;
             return null;
         }
 
@@ -3477,31 +3275,13 @@ public final class JSONLexer {
             return arrayarray;
         }
 
-        if (chLocal == '}') {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == EOI) {
-                bp += (offset - 1);
-                token = JSONToken.EOF;
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
                 return null;
             }
-            matchStat = END;
         } else {
-            matchStat = NOT_MATCH;
             return null;
         }
 
@@ -3598,31 +3378,13 @@ public final class JSONLexer {
             return value;
         }
 
-        if (chLocal == '}') {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == EOI) {
-                bp += (offset - 1);
-                token = JSONToken.EOF;
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
                 return 0;
             }
-            matchStat = END;
         } else {
-            matchStat = NOT_MATCH;
             return 0;
         }
 
@@ -3795,35 +3557,13 @@ public final class JSONLexer {
             return array;
         }
 
-        if (chLocal == '}') {
-            // chLocal = charAt(bp + (offset++));
-            charIndex = bp + (offset++);
-            chLocal = charIndex >= this.len ? //
-                    EOI //
-                    : text.charAt(charIndex);
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == EOI) {
-                bp += (offset - 1);
-                token = JSONToken.EOF;
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
                 return null;
             }
-            matchStat = END;
         } else {
-            matchStat = NOT_MATCH;
             return null;
         }
 
@@ -4038,31 +3778,13 @@ public final class JSONLexer {
             return arrayarray;
         }
 
-        if (chLocal == '}') {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal == ',') {
-                token = JSONToken.COMMA;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == ']') {
-                token = JSONToken.RBRACKET;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == '}') {
-                token = JSONToken.RBRACE;
-                bp += (offset - 1);
-                this.next();
-            } else if (chLocal == EOI) {
-                bp += (offset - 1);
-                token = JSONToken.EOF;
-                ch = EOI;
-            } else {
-                matchStat = NOT_MATCH;
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
                 return null;
             }
-            matchStat = END;
         } else {
-            matchStat = NOT_MATCH;
             return null;
         }
 
@@ -4147,15 +3869,33 @@ public final class JSONLexer {
             if (chLocal == ',') {
                 token = JSONToken.COMMA;
                 bp += (offset - 1);
-                this.next();
+                // this.next();
+                {
+                    int index = ++bp;
+                    this.ch = index >= this.len ? //
+                            EOI //
+                            : text.charAt(index);
+                }
             } else if (chLocal == ']') {
                 token = JSONToken.RBRACKET;
                 bp += (offset - 1);
-                this.next();
+                // this.next();
+                {
+                    int index = ++bp;
+                    this.ch = index >= this.len ? //
+                            EOI //
+                            : text.charAt(index);
+                }
             } else if (chLocal == '}') {
                 token = JSONToken.RBRACE;
                 bp += (offset - 1);
-                this.next();
+                // this.next();
+                {
+                    int index = ++bp;
+                    this.ch = index >= this.len ? //
+                            EOI //
+                            : text.charAt(index);
+                }
             } else if (chLocal == EOI) {
                 token = JSONToken.EOF;
                 bp += (offset - 1);

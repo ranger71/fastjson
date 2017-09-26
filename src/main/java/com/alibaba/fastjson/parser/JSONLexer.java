@@ -4127,6 +4127,28 @@ public final class JSONLexer {
 
         boolean shouldReturn = false;
         char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        block:
+        {
+            if (prevChLocal == '}') {
+                if (chLocal == ',') {
+                } else if (chLocal == ']') {
+                } else if (chLocal == '}') {
+                } else if (chLocal == EOI) {
+                } else {
+                    shouldReturn = true;
+                    break block;
+                }
+            } else {
+                shouldReturn = true;
+            }
+        }
+        if (shouldReturn) return 0;
+        return hash;
+    }
+
+    protected char finalizeScan(int offset, char chLocal) {
+        int charIndex;
         slice:
         {
             if (chLocal == '}') {
@@ -4159,23 +4181,7 @@ public final class JSONLexer {
                 matchStat = NOT_MATCH;
             }
         }
-        block:
-        {
-            if (prevChLocal == '}') {
-                if (chLocal == ',') {
-                } else if (chLocal == ']') {
-                } else if (chLocal == '}') {
-                } else if (chLocal == EOI) {
-                } else {
-                    shouldReturn = true;
-                    break block;
-                }
-            } else {
-                shouldReturn = true;
-            }
-        }
-        if (shouldReturn) return 0;
-        return hash;
+        return chLocal;
     }
 
     public boolean scanISO8601DateIfMatch(boolean strict) {

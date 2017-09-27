@@ -2815,15 +2815,14 @@ public final class JSONLexer {
             }
         }
 
-        int power = 1;
+        int power = computePower(offset, chLocal);
         boolean small = (chLocal == '.');
         if (small) {
             chLocal = charAt(bp + (offset++));
             //assert chLocal >= '0' && chLocal <= '9';
-            for (power = 10; ; ) {
+            for (; ; ) {
                 chLocal = charAt(bp + (offset++));
                 if (chLocal >= '0' && chLocal <= '9') {
-                    power *= 10;
                     continue;
                 } else {
                     break;

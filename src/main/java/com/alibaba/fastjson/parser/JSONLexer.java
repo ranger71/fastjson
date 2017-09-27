@@ -3304,7 +3304,7 @@ public final class JSONLexer {
             chLocal = charAt(bp + (offset++));
         }
 
-        if (noMatch2(offset, chLocal)) return 0;
+        if (notMatch2(offset, chLocal)) return 0;
         //assert chLocal >= '0' && chLocal <= '9';
         int intVal = chLocal - '0';
         for (; ; ) {
@@ -3373,33 +3373,6 @@ public final class JSONLexer {
         }
 
         return value;
-    }
-
-    protected boolean noMatch2(int offset, char chLocal) {
-        if (chLocal >= '0' && chLocal <= '9') {
-            for (; ; ) {
-                chLocal = charAt(bp + (offset++));
-                if (chLocal >= '0' && chLocal <= '9') {
-                    continue;
-                } else {
-                    break;
-                }
-            }
-
-            boolean small = (chLocal == '.');
-            if (small) {
-                chLocal = charAt(bp + (offset++));
-                if (chLocal >= '0' && chLocal <= '9') {
-                } else {
-                    matchStat = NOT_MATCH;
-                    return true;
-                }
-            }
-        } else {
-            matchStat = NOT_MATCH;
-            return true;
-        }
-        return false;
     }
 
     public final double[] scanFieldDoubleArray(long fieldHashCode) {
@@ -3859,8 +3832,7 @@ public final class JSONLexer {
                 chLocal = charIndex >= this.len ? //
                         EOI //
                         : text.charAt(charIndex);
-                if (chLocal >= '0' && chLocal <= '9') {
-                } else {
+                if (chLocal < '0' || chLocal > '9') {
                     matchStat = NOT_MATCH;
                     return true;
                 }

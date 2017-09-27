@@ -3376,8 +3376,6 @@ public final class JSONLexer {
                             }
                         }
                     } else {
-                        matchStat = NOT_MATCH;
-                        shouldReturn = true;
                         break block; // return 0;
                     }
                 }
@@ -3399,10 +3397,6 @@ public final class JSONLexer {
                 int count = bp + offset - start - 1;
 
                 value = computeDoubleValue(start, negative, intVal, power, exp, count);
-            } else {
-                matchStat = NOT_MATCH;
-                shouldReturn = true;
-                break block; // return 0;
             }
         }
         if (shouldReturn) return 0;

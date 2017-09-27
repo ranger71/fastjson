@@ -3406,7 +3406,112 @@ public final class JSONLexer {
             matchStat = NOT_MATCH;
             return null;
         }
+        int oldOffset = offset;
         boolean shouldReturn = false;
+        // chLocal = charAt(bp + (offset++));
+        charIndex = bp + (offset++);
+        chLocal = charIndex >= this.len ? //
+                EOI //
+                : text.charAt(charIndex);
+
+       slice:
+        {
+            for (; ; ) {
+                boolean negative = chLocal == '-';
+                if (negative) {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                }
+
+                if (chLocal >= '0' && chLocal <= '9') {
+                    for (; ; ) {
+                        // chLocal = charAt(bp + (offset++));
+                        charIndex = bp + (offset++);
+                        chLocal = charIndex >= this.len ? //
+                                EOI //
+                                : text.charAt(charIndex);
+                        if (chLocal >= '0' && chLocal <= '9') {
+                            continue;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    boolean small = (chLocal == '.');
+                    if (small) {
+                        // chLocal = charAt(bp + (offset++));
+                        charIndex = bp + (offset++);
+                        chLocal = charIndex >= this.len ? //
+                                EOI //
+                                : text.charAt(charIndex);
+                        if (chLocal >= '0' && chLocal <= '9') {
+                            for (; ; ) {
+                                // chLocal = charAt(bp + (offset++));
+                                charIndex = bp + (offset++);
+                                chLocal = charIndex >= this.len ? //
+                                        EOI //
+                                        : text.charAt(charIndex);
+
+                                if (chLocal >= '0' && chLocal <= '9') {
+                                    continue;
+                                } else {
+                                    break;
+                                }
+                            }
+                        } else {
+                            matchStat = NOT_MATCH;
+                            shouldReturn = true;
+                            break slice;//return null;
+                        }
+                    }
+
+                    boolean exp = chLocal == 'e' || chLocal == 'E';
+                    if (exp) {
+                        // chLocal = charAt(bp + (offset++));
+                        charIndex = bp + (offset++);
+                        chLocal = charIndex >= this.len ? //
+                                EOI //
+                                : text.charAt(charIndex);
+                        if (chLocal == '+' || chLocal == '-') {
+                            // chLocal = charAt(bp + (offset++));
+                            charIndex = bp + (offset++);
+                            chLocal = charIndex >= this.len ? //
+                                    EOI //
+                                    : text.charAt(charIndex);
+                        }
+                        for (; ; ) {
+                            if (chLocal >= '0' && chLocal <= '9') {
+                                // chLocal = charAt(bp + (offset++));
+                                charIndex = bp + (offset++);
+                                chLocal = charIndex >= this.len ? //
+                                        EOI //
+                                        : text.charAt(charIndex);
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+
+                    if (chLocal == ',') {
+                        // chLocal = charAt(bp + (offset++));
+                        charIndex = bp + (offset++);
+                        chLocal = charIndex >= this.len ? //
+                                EOI //
+                                : text.charAt(charIndex);
+                    } else if (chLocal == ']') {
+                        break;
+                    }
+                } else {
+                    matchStat = NOT_MATCH;
+                    shouldReturn = true;
+                    break slice;//return null;
+                }
+            }
+        }
+        offset = oldOffset;
         // chLocal = charAt(bp + (offset++));
         charIndex = bp + (offset++);
         chLocal = charIndex >= this.len ? //
@@ -3473,8 +3578,6 @@ public final class JSONLexer {
                                 }
                             }
                         } else {
-                            matchStat = NOT_MATCH;
-                            shouldReturn = true;
                             break block;//return null;
                         }
                     }
@@ -3536,8 +3639,6 @@ public final class JSONLexer {
                         break;
                     }
                 } else {
-                    matchStat = NOT_MATCH;
-                    shouldReturn = true;
                     break block;//return null;
                 }
             }

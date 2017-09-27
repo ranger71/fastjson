@@ -3416,135 +3416,127 @@ public final class JSONLexer {
         double[] array = new double[16];
         int arrayIndex = 0;
 
-        block:
-        {
-            for (; ; ) {
-                int start = bp + offset - 1;
+        for (; ; ) {
+            int start = bp + offset - 1;
 
-                boolean negative = chLocal == '-';
-                if (negative) {
+            boolean negative = chLocal == '-';
+            if (negative) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+            }
+
+            // assert chLocal >= '0' && chLocal <= '9';
+            int intVal = chLocal - '0';
+            for (; ; ) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                if (chLocal >= '0' && chLocal <= '9') {
+                    intVal = intVal * 10 + (chLocal - '0');
+                    continue;
+                } else {
+                    break;
+                }
+            }
+
+            int power = 1;
+            boolean small = (chLocal == '.');
+            if (small) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                power *= 10;
+                //assert chLocal >= '0' && chLocal <= '9';
+                intVal = intVal * 10 + (chLocal - '0');
+                for (; ; ) {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+
+                    if (chLocal >= '0' && chLocal <= '9') {
+                        intVal = intVal * 10 + (chLocal - '0');
+                        power *= 10;
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            boolean exp = chLocal == 'e' || chLocal == 'E';
+            if (exp) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                if (chLocal == '+' || chLocal == '-') {
                     // chLocal = charAt(bp + (offset++));
                     charIndex = bp + (offset++);
                     chLocal = charIndex >= this.len ? //
                             EOI //
                             : text.charAt(charIndex);
                 }
-
-                if (chLocal >= '0' && chLocal <= '9') {
-                    int intVal = chLocal - '0';
-                    for (; ; ) {
+                for (; ; ) {
+                    if (chLocal >= '0' && chLocal <= '9') {
                         // chLocal = charAt(bp + (offset++));
                         charIndex = bp + (offset++);
                         chLocal = charIndex >= this.len ? //
                                 EOI //
                                 : text.charAt(charIndex);
-                        if (chLocal >= '0' && chLocal <= '9') {
-                            intVal = intVal * 10 + (chLocal - '0');
-                            continue;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    int power = 1;
-                    boolean small = (chLocal == '.');
-                    if (small) {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                        power *= 10;
-                        if (chLocal >= '0' && chLocal <= '9') {
-                            intVal = intVal * 10 + (chLocal - '0');
-                            for (; ; ) {
-                                // chLocal = charAt(bp + (offset++));
-                                charIndex = bp + (offset++);
-                                chLocal = charIndex >= this.len ? //
-                                        EOI //
-                                        : text.charAt(charIndex);
-
-                                if (chLocal >= '0' && chLocal <= '9') {
-                                    intVal = intVal * 10 + (chLocal - '0');
-                                    power *= 10;
-                                    continue;
-                                } else {
-                                    break;
-                                }
-                            }
-                        } else {
-                            break block;//return null;
-                        }
-                    }
-
-                    boolean exp = chLocal == 'e' || chLocal == 'E';
-                    if (exp) {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                        if (chLocal == '+' || chLocal == '-') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                        }
-                        for (; ; ) {
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                // chLocal = charAt(bp + (offset++));
-                                charIndex = bp + (offset++);
-                                chLocal = charIndex >= this.len ? //
-                                        EOI //
-                                        : text.charAt(charIndex);
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-
-                    int count = bp + offset - start - 1;
-
-                    double value;
-                    if (!exp && count < 10) {
-                        value = ((double) intVal) / power;
-                        if (negative) {
-                            value = -value;
-                        }
                     } else {
-                        String text = this.subString(start, count);
-                        value = Double.parseDouble(text);
-                    }
-
-                    if (arrayIndex >= array.length) {
-                        double[] tmp = new double[array.length * 3 / 2];
-                        System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                        array = tmp;
-                    }
-                    array[arrayIndex++] = value;
-
-                    if (chLocal == ',') {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                    } else if (chLocal == ']') {
                         break;
                     }
-                } else {
-                    break block;//return null;
                 }
             }
 
+            int count = bp + offset - start - 1;
 
-            if (arrayIndex != array.length) {
-                double[] tmp = new double[arrayIndex];
+            double value;
+            if (!exp && count < 10) {
+                value = ((double) intVal) / power;
+                if (negative) {
+                    value = -value;
+                }
+            } else {
+                String text = this.subString(start, count);
+                value = Double.parseDouble(text);
+            }
+
+            if (arrayIndex >= array.length) {
+                double[] tmp = new double[array.length * 3 / 2];
                 System.arraycopy(array, 0, tmp, 0, arrayIndex);
                 array = tmp;
             }
+            array[arrayIndex++] = value;
+
+            if (chLocal == ',') {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+            } else if (chLocal == ']') {
+                break;
+            }
         }
+
+
+        if (arrayIndex != array.length) {
+            double[] tmp = new double[arrayIndex];
+            System.arraycopy(array, 0, tmp, 0, arrayIndex);
+            array = tmp;
+        }
+
         //chLocal = charAt(bp + (offset++));
         charIndex = bp + (offset++);
         chLocal = charIndex >= this.len ? //

@@ -3765,7 +3765,47 @@ public final class JSONLexer {
                         EOI //
                         : text.charAt(charIndex);
             }
+            int offset2 = offset;
+            char chLocal2 = chLocal;
             boolean shouldReturn = false;
+            block:
+            {
+                if (chLocal >= '0' && chLocal <= '9') {
+                    for (; ; ) {
+                        // chLocal = charAt(bp + (offset++));
+                        charIndex = bp + (offset++);
+                        chLocal = charIndex >= this.len ? //
+                                EOI //
+                                : text.charAt(charIndex);
+                        if (chLocal >= '0' && chLocal <= '9') {
+                            continue;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    boolean small = (chLocal == '.');
+                    if (small) {
+                        // chLocal = charAt(bp + (offset++));
+                        charIndex = bp + (offset++);
+                        chLocal = charIndex >= this.len ? //
+                                EOI //
+                                : text.charAt(charIndex);
+                        if (chLocal >= '0' && chLocal <= '9') {
+                        } else {
+                            matchStat = NOT_MATCH;
+                            shouldReturn = true;
+                            break block; //return true;
+                        }
+                    }
+
+                } else {
+                    matchStat = NOT_MATCH;
+                    shouldReturn = true;
+                }
+            }
+            offset = offset2;
+            chLocal = chLocal2;
             boolean shouldBreak = false;
             block:
             {
@@ -3805,8 +3845,6 @@ public final class JSONLexer {
                                 }
                             }
                         } else {
-                            matchStat = NOT_MATCH;
-                            shouldReturn = true;
                             break block; //return true;
                         }
                     }
@@ -3847,9 +3885,6 @@ public final class JSONLexer {
                     } else if (chLocal == ']') {
                         shouldBreak = true; // break;
                     }
-                } else {
-                    matchStat = NOT_MATCH;
-                    shouldReturn = true;
                 }
             }
             if (shouldReturn) return true;

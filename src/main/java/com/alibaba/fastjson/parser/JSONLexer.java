@@ -3345,7 +3345,7 @@ public final class JSONLexer {
         }
         if (notMatch(offset)) return null;
         double[] array = new double[computeArraySize(offset)];
-        offset = populateArray(offset, array);
+        offset = populateDoubleArray(offset, array);
 
         //chLocal = charAt(bp + (offset++));
         charIndex = bp + (offset++);
@@ -3374,7 +3374,7 @@ public final class JSONLexer {
         return array;
     }
 
-    protected int populateArray(int offset, double[] array) {
+    protected int populateDoubleArray(int offset, double[] array) {
         int charIndex;
         char chLocal;
         int arrayIndex = 0;
@@ -3827,7 +3827,7 @@ public final class JSONLexer {
             if (chLocal == '[') {
                 if (notMatch(offset)) return null;
                 double[] array = new double[computeArraySize(offset)];
-                offset = populateArray(offset, array);
+                offset = populateDoubleArray(offset, array);
 
                 //chLocal = charAt(bp + (offset++));
                 charIndex = bp + (offset++);

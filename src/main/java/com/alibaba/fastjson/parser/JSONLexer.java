@@ -3356,15 +3356,8 @@ public final class JSONLexer {
             }
 
             int count = bp + offset - start - 1;
-            if (!exp && count < 10) {
-                value = ((double) intVal) / power;
-                if (negative) {
-                    value = -value;
-                }
-            } else {
-                String text = this.subString(start, count);
-                value = Double.parseDouble(text);
-            }
+
+            value = computeDoubleValue(start, negative, intVal, power, exp, count);
         } else {
             matchStat = NOT_MATCH;
             return 0;

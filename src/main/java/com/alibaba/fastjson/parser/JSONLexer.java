@@ -3305,37 +3305,7 @@ public final class JSONLexer {
         }
 
         if (notMatch2(offset, chLocal)) return 0;
-        int offset2 = offset;
-        char chLocal2 = chLocal;
-        //assert chLocal >= '0' && chLocal <= '9';
-        int intVal = chLocal - '0';
-        for (; ; ) {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal >= '0' && chLocal <= '9') {
-                intVal = intVal * 10 + (chLocal - '0');
-                continue;
-            } else {
-                break;
-            }
-        }
-
-        boolean small = (chLocal == '.');
-        if (small) {
-            chLocal = charAt(bp + (offset++));
-            //assert chLocal >= '0' && chLocal <= '9';
-            intVal = intVal * 10 + (chLocal - '0');
-            for (; ; ) {
-                chLocal = charAt(bp + (offset++));
-                if (chLocal >= '0' && chLocal <= '9') {
-                    intVal = intVal * 10 + (chLocal - '0');
-                    continue;
-                } else {
-                    break;
-                }
-            }
-        }
-        offset = offset2;
-        chLocal = chLocal2;
+        int intVal = computeIntVal2(offset, chLocal);
         for (; ; ) {
             chLocal = charAt(bp + (offset++));
             if (chLocal >= '0' && chLocal <= '9') {
@@ -3346,7 +3316,7 @@ public final class JSONLexer {
         }
 
         int power = 1;
-        small = (chLocal == '.');
+        boolean small = (chLocal == '.');
         if (small) {
             chLocal = charAt(bp + (offset++));
             //assert chLocal >= '0' && chLocal <= '9';
@@ -3399,6 +3369,37 @@ public final class JSONLexer {
         }
 
         return value;
+    }
+
+    protected int computeIntVal2(int offset, char chLocal) {
+        //assert chLocal >= '0' && chLocal <= '9';
+        int intVal = chLocal - '0';
+        for (; ; ) {
+            chLocal = charAt(bp + (offset++));
+            if (chLocal >= '0' && chLocal <= '9') {
+                intVal = intVal * 10 + (chLocal - '0');
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        boolean small = (chLocal == '.');
+        if (small) {
+            chLocal = charAt(bp + (offset++));
+            //assert chLocal >= '0' && chLocal <= '9';
+            intVal = intVal * 10 + (chLocal - '0');
+            for (; ; ) {
+                chLocal = charAt(bp + (offset++));
+                if (chLocal >= '0' && chLocal <= '9') {
+                    intVal = intVal * 10 + (chLocal - '0');
+                    continue;
+                } else {
+                    break;
+                }
+            }
+        }
+        return intVal;
     }
 
     public final double[] scanFieldDoubleArray(long fieldHashCode) {

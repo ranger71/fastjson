@@ -3305,7 +3305,45 @@ public final class JSONLexer {
         }
 
         double value = 0;
+        int offset2 = offset;
+        char chLocal2 = chLocal;
         boolean shouldReturn = false;
+        slice:
+        {
+            if (chLocal >= '0' && chLocal <= '9') {
+                for (; ; ) {
+                    chLocal = charAt(bp + (offset++));
+                    if (chLocal >= '0' && chLocal <= '9') {
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+
+                boolean small = (chLocal == '.');
+                if (small) {
+                    chLocal = charAt(bp + (offset++));
+                    if (chLocal >= '0' && chLocal <= '9') {
+                        for (; ; ) {
+                            chLocal = charAt(bp + (offset++));
+                            if (chLocal >= '0' && chLocal <= '9') {
+                                continue;
+                            } else {
+                                break;
+                            }
+                        }
+                    } else {
+                        matchStat = NOT_MATCH;
+                        shouldReturn = true; // return 0;
+                    }
+                }
+            } else {
+                matchStat = NOT_MATCH;
+                shouldReturn = true; // return 0;
+            }
+        }
+        offset = offset2;
+        chLocal = chLocal2;
         block:
         {
             if (chLocal >= '0' && chLocal <= '9') {

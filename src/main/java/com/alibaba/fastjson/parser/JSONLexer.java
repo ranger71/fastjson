@@ -2804,7 +2804,7 @@ public final class JSONLexer {
         }
 
         if (notMatch2(offset, chLocal)) return 0;
-        assert chLocal >= '0' && chLocal <= '9';
+        //assert chLocal >= '0' && chLocal <= '9';
         int intVal = chLocal - '0';
         for (;;) {
             chLocal = charAt(bp + (offset++));

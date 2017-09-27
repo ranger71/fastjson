@@ -3390,14 +3390,6 @@ public final class JSONLexer {
             if (small) {
                 chLocal = charAt(bp + (offset++));
                 if (chLocal >= '0' && chLocal <= '9') {
-                    for (; ; ) {
-                        chLocal = charAt(bp + (offset++));
-                        if (chLocal >= '0' && chLocal <= '9') {
-                            continue;
-                        } else {
-                            break;
-                        }
-                    }
                 } else {
                     matchStat = NOT_MATCH;
                     return true;

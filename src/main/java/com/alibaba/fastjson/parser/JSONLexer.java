@@ -3803,7 +3803,7 @@ public final class JSONLexer {
                         }
                     } else {
                         matchStat = NOT_MATCH;
-                        return false;
+                        return true;
                     }
                 }
 

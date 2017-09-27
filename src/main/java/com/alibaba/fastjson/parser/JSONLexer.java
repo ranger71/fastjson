@@ -3407,110 +3407,13 @@ public final class JSONLexer {
             return null;
         }
         if (notMatch(offset)) return null;
-        int prevOffset = offset;
+        double[] array = new double[computeArraySize(offset)];
         int arrayIndex = 0;
         // chLocal = charAt(bp + (offset++));
         charIndex = bp + (offset++);
         chLocal = charIndex >= this.len ? //
                 EOI //
                 : text.charAt(charIndex);
-
-        for (; ; ) {
-            boolean negative = chLocal == '-';
-            if (negative) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-            }
-
-            // assert chLocal >= '0' && chLocal <= '9';
-            for (; ; ) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal >= '0' && chLocal <= '9') {
-                    continue;
-                } else {
-                    break;
-                }
-            }
-
-            boolean small = (chLocal == '.');
-            if (small) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                //assert chLocal >= '0' && chLocal <= '9';
-                for (; ; ) {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= this.len ? //
-                            EOI //
-                            : text.charAt(charIndex);
-
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            boolean exp = chLocal == 'e' || chLocal == 'E';
-            if (exp) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal == '+' || chLocal == '-') {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= this.len ? //
-                            EOI //
-                            : text.charAt(charIndex);
-                }
-                for (; ; ) {
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            arrayIndex++;
-
-            if (chLocal == ',') {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-            } else if (chLocal == ']') {
-                break;
-            }
-        }
-        int arraySize = arrayIndex;
-        arrayIndex = 0;
-        offset = prevOffset;
-        // chLocal = charAt(bp + (offset++));
-        charIndex = bp + (offset++);
-        chLocal = charIndex >= this.len ? //
-                EOI //
-                : text.charAt(charIndex);
-
-        double[] array = new double[16];
 
         for (; ; ) {
             int start = bp + offset - 1;
@@ -3658,6 +3561,105 @@ public final class JSONLexer {
         }
 
         return array;
+    }
+
+    protected int computeArraySize(int offset) {
+        int charIndex;
+        char chLocal;
+        int arraySize = 0;
+        // chLocal = charAt(bp + (offset++));
+        charIndex = bp + (offset++);
+        chLocal = charIndex >= this.len ? //
+                EOI //
+                : text.charAt(charIndex);
+
+        for (; ; ) {
+            boolean negative = chLocal == '-';
+            if (negative) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+            }
+
+            // assert chLocal >= '0' && chLocal <= '9';
+            for (; ; ) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                if (chLocal >= '0' && chLocal <= '9') {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+
+            boolean small = (chLocal == '.');
+            if (small) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                //assert chLocal >= '0' && chLocal <= '9';
+                for (; ; ) {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+
+                    if (chLocal >= '0' && chLocal <= '9') {
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            boolean exp = chLocal == 'e' || chLocal == 'E';
+            if (exp) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                if (chLocal == '+' || chLocal == '-') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                }
+                for (; ; ) {
+                    if (chLocal >= '0' && chLocal <= '9') {
+                        // chLocal = charAt(bp + (offset++));
+                        charIndex = bp + (offset++);
+                        chLocal = charIndex >= this.len ? //
+                                EOI //
+                                : text.charAt(charIndex);
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            arraySize++;
+
+            if (chLocal == ',') {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+            } else if (chLocal == ']') {
+                break;
+            }
+        }
+        return arraySize;
     }
 
     protected boolean notMatch(int offset) {

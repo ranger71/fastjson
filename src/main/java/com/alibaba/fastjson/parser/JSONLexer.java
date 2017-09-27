@@ -3765,130 +3765,118 @@ public final class JSONLexer {
                         EOI //
                         : text.charAt(charIndex);
             }
-            int offset2 = offset;
-            char chLocal2 = chLocal;
-            boolean shouldReturn = false;
-            block:
-            {
-                if (chLocal >= '0' && chLocal <= '9') {
-                    for (; ; ) {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                        if (chLocal >= '0' && chLocal <= '9') {
-                            continue;
-                        } else {
-                            break;
-                        }
+            if (notMatch2(offset, chLocal)) return true;
+            if (chLocal >= '0' && chLocal <= '9') {
+                for (; ; ) {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                    if (chLocal >= '0' && chLocal <= '9') {
+                        continue;
+                    } else {
+                        break;
                     }
-
-                    boolean small = (chLocal == '.');
-                    if (small) {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                        if (chLocal >= '0' && chLocal <= '9') {
-                        } else {
-                            matchStat = NOT_MATCH;
-                            shouldReturn = true;
-                            break block; //return true;
-                        }
-                    }
-
-                } else {
-                    matchStat = NOT_MATCH;
-                    shouldReturn = true;
                 }
-            }
-            offset = offset2;
-            chLocal = chLocal2;
-            boolean shouldBreak = false;
-            block:
-            {
-                if (chLocal >= '0' && chLocal <= '9') {
+
+                boolean small = (chLocal == '.');
+                if (small) {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                    //assert chLocal >= '0' && chLocal <= '9';
                     for (; ; ) {
                         // chLocal = charAt(bp + (offset++));
                         charIndex = bp + (offset++);
                         chLocal = charIndex >= this.len ? //
                                 EOI //
                                 : text.charAt(charIndex);
+
                         if (chLocal >= '0' && chLocal <= '9') {
                             continue;
                         } else {
                             break;
                         }
                     }
+                }
 
-                    boolean small = (chLocal == '.');
-                    if (small) {
+                boolean exp = chLocal == 'e' || chLocal == 'E';
+                if (exp) {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                    if (chLocal == '+' || chLocal == '-') {
                         // chLocal = charAt(bp + (offset++));
                         charIndex = bp + (offset++);
                         chLocal = charIndex >= this.len ? //
                                 EOI //
                                 : text.charAt(charIndex);
-                        if (chLocal >= '0' && chLocal <= '9') {
-                            for (; ; ) {
-                                // chLocal = charAt(bp + (offset++));
-                                charIndex = bp + (offset++);
-                                chLocal = charIndex >= this.len ? //
-                                        EOI //
-                                        : text.charAt(charIndex);
-
-                                if (chLocal >= '0' && chLocal <= '9') {
-                                    continue;
-                                } else {
-                                    break;
-                                }
-                            }
-                        } else {
-                            break block; //return true;
-                        }
                     }
-
-                    boolean exp = chLocal == 'e' || chLocal == 'E';
-                    if (exp) {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                        if (chLocal == '+' || chLocal == '-') {
+                    for (; ; ) {
+                        if (chLocal >= '0' && chLocal <= '9') {
                             // chLocal = charAt(bp + (offset++));
                             charIndex = bp + (offset++);
                             chLocal = charIndex >= this.len ? //
                                     EOI //
                                     : text.charAt(charIndex);
+                        } else {
+                            break;
                         }
-                        for (; ; ) {
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                // chLocal = charAt(bp + (offset++));
-                                charIndex = bp + (offset++);
-                                chLocal = charIndex >= this.len ? //
-                                        EOI //
-                                        : text.charAt(charIndex);
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-
-                    if (chLocal == ',') {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                    } else if (chLocal == ']') {
-                        shouldBreak = true; // break;
                     }
                 }
+
+                if (chLocal == ',') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                } else if (chLocal == ']') {
+                    break;
+                }
             }
-            if (shouldReturn) return true;
-            if (shouldBreak) break;
+        }
+        return false;
+    }
+
+    private boolean notMatch2(int offset, char chLocal) {
+        int charIndex;
+        if (chLocal >= '0' && chLocal <= '9') {
+            for (; ; ) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                if (chLocal >= '0' && chLocal <= '9') {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+
+            boolean small = (chLocal == '.');
+            if (small) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                if (chLocal >= '0' && chLocal <= '9') {
+                } else {
+                    matchStat = NOT_MATCH;
+                    return true;
+                }
+            }
+
+        } else {
+            matchStat = NOT_MATCH;
+            return true;
         }
         return false;
     }

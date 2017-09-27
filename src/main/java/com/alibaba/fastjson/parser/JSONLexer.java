@@ -3533,15 +3533,7 @@ public final class JSONLexer {
             int count = bp + offset - start - 1;
 
             double value;
-            if (!exp && count < 10) {
-                value = ((double) intVal) / power;
-                if (negative) {
-                    value = -value;
-                }
-            } else {
-                String text = this.subString(start, count);
-                value = Double.parseDouble(text);
-            }
+            value = computeDoubleValue(start, negative, intVal, power, exp, count);
 
             array[arrayIndex++] = value;
 
@@ -3556,6 +3548,20 @@ public final class JSONLexer {
             }
         }
         return offset;
+    }
+
+    private double computeDoubleValue(int start, boolean negative, int intVal, int power, boolean exp, int count) {
+        double value;
+        if (!exp && count < 10) {
+            value = ((double) intVal) / power;
+            if (negative) {
+                value = -value;
+            }
+        } else {
+            String text = this.subString(start, count);
+            value = Double.parseDouble(text);
+        }
+        return value;
     }
 
     protected int computeArraySize(int offset) {

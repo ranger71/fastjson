@@ -3473,6 +3473,8 @@ public final class JSONLexer {
                 }
             }
 
+            int offset2 = offset;
+            char chLocal2 = chLocal;
             int power = 1;
             boolean small = (chLocal == '.');
             if (small) {
@@ -3492,6 +3494,30 @@ public final class JSONLexer {
 
                     if (chLocal >= '0' && chLocal <= '9') {
                         power *= 10;
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            offset = offset2;
+            chLocal = chLocal2;
+            small = (chLocal == '.');
+            if (small) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                //assert chLocal >= '0' && chLocal <= '9';
+                for (; ; ) {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+
+                    if (chLocal >= '0' && chLocal <= '9') {
                         continue;
                     } else {
                         break;

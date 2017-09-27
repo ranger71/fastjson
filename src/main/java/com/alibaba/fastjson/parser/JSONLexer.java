@@ -3315,7 +3315,7 @@ public final class JSONLexer {
             }
         }
 
-        int power = computePower2(offset, chLocal);
+        int power = computePower(offset, chLocal);
         boolean small = (chLocal == '.');
         if (small) {
             chLocal = charAt(bp + (offset++));
@@ -3367,26 +3367,6 @@ public final class JSONLexer {
         }
 
         return value;
-    }
-
-    protected int computePower2(int offset, char chLocal) {
-        int power = 1;
-        boolean small = (chLocal == '.');
-        if (small) {
-            chLocal = charAt(bp + (offset++));
-            //assert chLocal >= '0' && chLocal <= '9';
-            power *= 10;
-            for (; ; ) {
-                chLocal = charAt(bp + (offset++));
-                if (chLocal >= '0' && chLocal <= '9') {
-                    power *= 10;
-                    continue;
-                } else {
-                    break;
-                }
-            }
-        }
-        return power;
     }
 
     public final double[] scanFieldDoubleArray(long fieldHashCode) {

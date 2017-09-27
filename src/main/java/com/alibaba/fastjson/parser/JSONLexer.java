@@ -2803,69 +2803,54 @@ public final class JSONLexer {
             chLocal = charAt(bp + (offset++));
         }
 
-        float value;
-        if (chLocal >= '0' && chLocal <= '9') {
-            int intVal = chLocal - '0';
-            for (;;) {
+        if (notMatch2(offset, chLocal)) return 0;
+        assert chLocal >= '0' && chLocal <= '9';
+        int intVal = chLocal - '0';
+        for (;;) {
+            chLocal = charAt(bp + (offset++));
+            if (chLocal >= '0' && chLocal <= '9') {
+                intVal = intVal * 10 + (chLocal - '0');
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        int power = 1;
+        boolean small = (chLocal == '.');
+        if (small) {
+            chLocal = charAt(bp + (offset++));
+            //assert chLocal >= '0' && chLocal <= '9';
+            intVal = intVal * 10 + (chLocal - '0');
+            for (power = 10; ; ) {
                 chLocal = charAt(bp + (offset++));
                 if (chLocal >= '0' && chLocal <= '9') {
                     intVal = intVal * 10 + (chLocal - '0');
+                    power *= 10;
                     continue;
                 } else {
                     break;
                 }
             }
-
-            int power = 1;
-            boolean small = (chLocal == '.');
-            if (small) {
-                if ((chLocal = charAt(bp + (offset++))) >= '0' && chLocal <= '9') {
-                    intVal = intVal * 10 + (chLocal - '0');
-                    for (power = 10; ; ) {
-                        chLocal = charAt(bp + (offset++));
-                        if (chLocal >= '0' && chLocal <= '9') {
-                            intVal = intVal * 10 + (chLocal - '0');
-                            power *= 10;
-                            continue;
-                        } else {
-                            break;
-                        }
-                    }
-                } else {
-                    matchStat = NOT_MATCH;
-                    return 0;
-                }
-            }
-
-            boolean exp = chLocal == 'e' || chLocal == 'E';
-            if (exp) {
-                chLocal = charAt(bp + (offset++));
-                if (chLocal == '+' || chLocal == '-') {
-                    chLocal = charAt(bp + (offset++));
-                }
-                for (;;) {
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        chLocal = charAt(bp + (offset++));
-                    } else {
-                        break;
-                    }
-                }
-            }
-
-            int count = bp + offset - start - 1;
-            if (!exp && count < 10) {
-                value = ((float) intVal) / power;
-                if (negative) {
-                    value = -value;
-                }
-            } else {
-                String text = this.subString(start, count);
-                value = Float.parseFloat(text);
-            }
-        } else {
-            matchStat = NOT_MATCH;
-            return 0;
         }
+
+        boolean exp = chLocal == 'e' || chLocal == 'E';
+        if (exp) {
+            chLocal = charAt(bp + (offset++));
+            if (chLocal == '+' || chLocal == '-') {
+                chLocal = charAt(bp + (offset++));
+            }
+            for (;;) {
+                if (chLocal >= '0' && chLocal <= '9') {
+                    chLocal = charAt(bp + (offset++));
+                } else {
+                    break;
+                }
+            }
+        }
+
+        int count = bp + offset - start - 1;
+        float value = computeFloatValue(start, negative, intVal, power, exp, count);
 
         if (chLocal == ',') {
             bp += (offset - 1);
@@ -2885,6 +2870,20 @@ public final class JSONLexer {
             return 0;
         }
 
+        return value;
+    }
+
+    protected float computeFloatValue(int start, boolean negative, int intVal, int power, boolean exp, int count) {
+        float value;
+        if (!exp && count < 10) {
+            value = ((float) intVal) / power;
+            if (negative) {
+                value = -value;
+            }
+        } else {
+            String text = this.subString(start, count);
+            value = Float.parseFloat(text);
+        }
         return value;
     }
 
@@ -3002,15 +3001,7 @@ public final class JSONLexer {
                 int count = bp + offset - start - 1;
 
                 float value;
-                if (!exp && count < 10) {
-                    value = ((float) intVal) / power;
-                    if (negative) {
-                        value = -value;
-                    }
-                } else {
-                    String text = this.subString(start, count);
-                    value = Float.parseFloat(text);
-                }
+                value = computeFloatValue(start, negative, intVal, power, exp, count);
 
                 if (arrayIndex >= array.length) {
                     float[] tmp = new float[array.length * 3 / 2];
@@ -3192,15 +3183,7 @@ public final class JSONLexer {
 
                         int count = bp + offset - start - 1;
                         float value;
-                        if (!exp && count < 10) {
-                            value = ((float) intVal) / power;
-                            if (negative) {
-                                value = -value;
-                            }
-                        } else {
-                            String text = this.subString(start, count);
-                            value = Float.parseFloat(text);
-                        }
+                        value = computeFloatValue(start, negative, intVal, power, exp, count);
 
                         if (arrayIndex >= array.length) {
                             float[] tmp = new float[array.length * 3 / 2];

@@ -3473,36 +3473,8 @@ public final class JSONLexer {
                 }
             }
 
-            int offset2 = offset;
-            char chLocal2 = chLocal;
-            int power = 1;
+            int power = computePower(offset, chLocal);
             boolean small = (chLocal == '.');
-            if (small) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                power *= 10;
-                //assert chLocal >= '0' && chLocal <= '9';
-                for (; ; ) {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= this.len ? //
-                            EOI //
-                            : text.charAt(charIndex);
-
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        power *= 10;
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
-            }
-            offset = offset2;
-            chLocal = chLocal2;
-            small = (chLocal == '.');
             if (small) {
                 // chLocal = charAt(bp + (offset++));
                 charIndex = bp + (offset++);
@@ -3570,6 +3542,36 @@ public final class JSONLexer {
             }
         }
         return offset;
+    }
+
+    private int computePower(int offset, char chLocal) {
+        int charIndex;
+        int power = 1;
+        boolean small = (chLocal == '.');
+        if (small) {
+            // chLocal = charAt(bp + (offset++));
+            charIndex = bp + (offset++);
+            chLocal = charIndex >= this.len ? //
+                    EOI //
+                    : text.charAt(charIndex);
+            power *= 10;
+            //assert chLocal >= '0' && chLocal <= '9';
+            for (; ; ) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+
+                if (chLocal >= '0' && chLocal <= '9') {
+                    power *= 10;
+                    continue;
+                } else {
+                    break;
+                }
+            }
+        }
+        return power;
     }
 
     private int computeIntVal(int offset, char chLocal) {

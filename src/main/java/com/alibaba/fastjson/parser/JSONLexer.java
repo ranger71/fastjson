@@ -2805,11 +2805,10 @@ public final class JSONLexer {
 
         if (notMatch2(offset, chLocal)) return 0;
         //assert chLocal >= '0' && chLocal <= '9';
-        int intVal = chLocal - '0';
+        int intVal = computeIntVal(offset, chLocal);
         for (;;) {
             chLocal = charAt(bp + (offset++));
             if (chLocal >= '0' && chLocal <= '9') {
-                intVal = intVal * 10 + (chLocal - '0');
                 continue;
             } else {
                 break;
@@ -2821,11 +2820,9 @@ public final class JSONLexer {
         if (small) {
             chLocal = charAt(bp + (offset++));
             //assert chLocal >= '0' && chLocal <= '9';
-            intVal = intVal * 10 + (chLocal - '0');
             for (power = 10; ; ) {
                 chLocal = charAt(bp + (offset++));
                 if (chLocal >= '0' && chLocal <= '9') {
-                    intVal = intVal * 10 + (chLocal - '0');
                     power *= 10;
                     continue;
                 } else {

@@ -3511,11 +3511,6 @@ public final class JSONLexer {
                 value = Double.parseDouble(text);
             }
 
-            if (arrayIndex >= array.length) {
-                double[] tmp = new double[array.length * 3 / 2];
-                System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                array = tmp;
-            }
             array[arrayIndex++] = value;
 
             if (chLocal == ',') {
@@ -3527,13 +3522,6 @@ public final class JSONLexer {
             } else if (chLocal == ']') {
                 break;
             }
-        }
-
-
-        if (arrayIndex != array.length) {
-            double[] tmp = new double[arrayIndex];
-            System.arraycopy(array, 0, tmp, 0, arrayIndex);
-            array = tmp;
         }
 
         //chLocal = charAt(bp + (offset++));

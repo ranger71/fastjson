@@ -3526,10 +3526,7 @@ public final class JSONLexer {
 
             int count = bp + offset - start - 1;
 
-            double value;
-            value = computeDoubleValue(start, negative, intVal, power, exp, count);
-
-            array[arrayIndex++] = value;
+            array[arrayIndex++] = computeDoubleValue(start, negative, intVal, power, exp, count);
 
             if (chLocal == ',') {
                 // chLocal = charAt(bp + (offset++));

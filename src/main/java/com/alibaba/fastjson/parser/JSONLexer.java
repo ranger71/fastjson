@@ -3408,6 +3408,38 @@ public final class JSONLexer {
         }
         if (notMatch(offset)) return null;
         double[] array = new double[computeArraySize(offset)];
+        offset = populateArray(offset, array);
+
+        //chLocal = charAt(bp + (offset++));
+        charIndex = bp + (offset++);
+        chLocal = charIndex >= this.len ? //
+                EOI //
+                : text.charAt(charIndex);
+
+        if (chLocal == ',') {
+            bp += (offset - 1);
+            this.next();
+            matchStat = VALUE;
+            token = JSONToken.COMMA;
+            return array;
+        }
+
+        char prevChLocal = chLocal;
+        chLocal = finalizeScan(offset, chLocal);
+        if (prevChLocal == '}') {
+            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+
+        return array;
+    }
+
+    protected int populateArray(int offset, double[] array) {
+        int charIndex;
+        char chLocal;
         int arrayIndex = 0;
         // chLocal = charAt(bp + (offset++));
         charIndex = bp + (offset++);
@@ -3523,32 +3555,7 @@ public final class JSONLexer {
                 break;
             }
         }
-
-        //chLocal = charAt(bp + (offset++));
-        charIndex = bp + (offset++);
-        chLocal = charIndex >= this.len ? //
-                EOI //
-                : text.charAt(charIndex);
-
-        if (chLocal == ',') {
-            bp += (offset - 1);
-            this.next();
-            matchStat = VALUE;
-            token = JSONToken.COMMA;
-            return array;
-        }
-
-        char prevChLocal = chLocal;
-        chLocal = finalizeScan(offset, chLocal);
-        if (prevChLocal == '}') {
-            if (chLocal != ',' && chLocal != ']' && chLocal != '}' && chLocal != EOI) {
-                return null;
-            }
-        } else {
-            return null;
-        }
-
-        return array;
+        return offset;
     }
 
     protected int computeArraySize(int offset) {

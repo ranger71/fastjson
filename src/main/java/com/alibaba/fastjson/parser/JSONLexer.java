@@ -3304,102 +3304,55 @@ public final class JSONLexer {
             chLocal = charAt(bp + (offset++));
         }
 
-        double value = 0;
-        int offset2 = offset;
-        char chLocal2 = chLocal;
-        boolean shouldReturn = false;
-        slice:
-        {
+        if (noMatch2(offset, chLocal)) return 0;
+        //assert chLocal >= '0' && chLocal <= '9';
+        int intVal = chLocal - '0';
+        for (; ; ) {
+            chLocal = charAt(bp + (offset++));
             if (chLocal >= '0' && chLocal <= '9') {
-                for (; ; ) {
-                    chLocal = charAt(bp + (offset++));
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
-
-                boolean small = (chLocal == '.');
-                if (small) {
-                    chLocal = charAt(bp + (offset++));
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        for (; ; ) {
-                            chLocal = charAt(bp + (offset++));
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                continue;
-                            } else {
-                                break;
-                            }
-                        }
-                    } else {
-                        matchStat = NOT_MATCH;
-                        shouldReturn = true; // return 0;
-                    }
-                }
+                intVal = intVal * 10 + (chLocal - '0');
+                continue;
             } else {
-                matchStat = NOT_MATCH;
-                shouldReturn = true; // return 0;
+                break;
             }
         }
-        offset = offset2;
-        chLocal = chLocal2;
-        block:
-        {
-            if (chLocal >= '0' && chLocal <= '9') {
-                int intVal = chLocal - '0';
-                for (; ; ) {
-                    chLocal = charAt(bp + (offset++));
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        intVal = intVal * 10 + (chLocal - '0');
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
 
-                int power = 1;
-                boolean small = (chLocal == '.');
-                if (small) {
-                    chLocal = charAt(bp + (offset++));
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        intVal = intVal * 10 + (chLocal - '0');
-                        power *= 10;
-                        for (; ; ) {
-                            chLocal = charAt(bp + (offset++));
-                            if (chLocal >= '0' && chLocal <= '9') {
-                                intVal = intVal * 10 + (chLocal - '0');
-                                power *= 10;
-                                continue;
-                            } else {
-                                break;
-                            }
-                        }
-                    } else {
-                        break block; // return 0;
-                    }
+        int power = 1;
+        boolean small = (chLocal == '.');
+        if (small) {
+            chLocal = charAt(bp + (offset++));
+            //assert chLocal >= '0' && chLocal <= '9';
+            intVal = intVal * 10 + (chLocal - '0');
+            power *= 10;
+            for (; ; ) {
+                chLocal = charAt(bp + (offset++));
+                if (chLocal >= '0' && chLocal <= '9') {
+                    intVal = intVal * 10 + (chLocal - '0');
+                    power *= 10;
+                    continue;
+                } else {
+                    break;
                 }
-                boolean exp = chLocal == 'e' || chLocal == 'E';
-                if (exp) {
-                    chLocal = charAt(bp + (offset++));
-                    if (chLocal == '+' || chLocal == '-') {
-                        chLocal = charAt(bp + (offset++));
-                    }
-                    for (; ; ) {
-                        if (chLocal >= '0' && chLocal <= '9') {
-                            chLocal = charAt(bp + (offset++));
-                        } else {
-                            break;
-                        }
-                    }
-                }
-
-                int count = bp + offset - start - 1;
-
-                value = computeDoubleValue(start, negative, intVal, power, exp, count);
             }
         }
-        if (shouldReturn) return 0;
+        boolean exp = chLocal == 'e' || chLocal == 'E';
+        if (exp) {
+            chLocal = charAt(bp + (offset++));
+            if (chLocal == '+' || chLocal == '-') {
+                chLocal = charAt(bp + (offset++));
+            }
+            for (; ; ) {
+                if (chLocal >= '0' && chLocal <= '9') {
+                    chLocal = charAt(bp + (offset++));
+                } else {
+                    break;
+                }
+            }
+        }
+
+        int count = bp + offset - start - 1;
+
+        double value = computeDoubleValue(start, negative, intVal, power, exp, count);
 
         if (chLocal == ',') {
             bp += (offset - 1);
@@ -3420,6 +3373,41 @@ public final class JSONLexer {
         }
 
         return value;
+    }
+
+    protected boolean noMatch2(int offset, char chLocal) {
+        if (chLocal >= '0' && chLocal <= '9') {
+            for (; ; ) {
+                chLocal = charAt(bp + (offset++));
+                if (chLocal >= '0' && chLocal <= '9') {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+
+            boolean small = (chLocal == '.');
+            if (small) {
+                chLocal = charAt(bp + (offset++));
+                if (chLocal >= '0' && chLocal <= '9') {
+                    for (; ; ) {
+                        chLocal = charAt(bp + (offset++));
+                        if (chLocal >= '0' && chLocal <= '9') {
+                            continue;
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    matchStat = NOT_MATCH;
+                    return true;
+                }
+            }
+        } else {
+            matchStat = NOT_MATCH;
+            return true;
+        }
+        return false;
     }
 
     public final double[] scanFieldDoubleArray(long fieldHashCode) {

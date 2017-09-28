@@ -2186,21 +2186,7 @@ public final class JSONLexer {
             }
             offset = offset2;
             chLocal = chLocal2;
-            value = chLocal - '0';
-            for (;;) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal >= '0' && chLocal <= '9') {
-                    value = value * 10 + (chLocal - '0');
-                } else {
-                    //assert chLocal != '.';
-                    break;
-                }
-            }
-            offset = offset2;
+            value = computeFieldIntValue(offset, chLocal);
             for (;;) {
                 // chLocal = charAt(bp + (offset++));
                 charIndex = bp + (offset++);

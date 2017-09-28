@@ -2187,6 +2187,7 @@ public final class JSONLexer {
                     break;
                 }
             }
+            if (shouldReturn) return 0;
             offset = offset2;
             chLocal = chLocal2;
             value = chLocal - '0';
@@ -2213,7 +2214,6 @@ public final class JSONLexer {
                     break;
                 }
             }
-            if (shouldReturn) return 0;
             if (value < 0) {
                 matchStat = NOT_MATCH;
                 return 0;

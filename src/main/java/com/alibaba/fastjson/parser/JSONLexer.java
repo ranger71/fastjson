@@ -2197,12 +2197,7 @@ public final class JSONLexer {
                     value = value * 10 + (chLocal - '0');
                 } else {
                     //assert chLocal != '.';
-                    if (chLocal == '\"') {
-                        //assert !!quote;
-                        break;
-                    } else {
-                        break;
-                    }
+                    break;
                 }
             }
             offset = offset2;

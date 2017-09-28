@@ -2283,22 +2283,7 @@ public final class JSONLexer {
                     nagative = true;
                 }
                 if (chLocal >= '0' && chLocal <= '9') {
-                    int offset2 = offset;
-                    int value = chLocal - '0';
-                    for (; ; ) {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-
-                        if (chLocal >= '0' && chLocal <= '9') {
-                            value = value * 10 + (chLocal - '0');
-                        } else {
-                            break;
-                        }
-                    }
-                    offset = offset2;
+                    int value = computeFieldIntValue(offset, chLocal);
                     for (; ; ) {
                         // chLocal = charAt(bp + (offset++));
                         charIndex = bp + (offset++);
@@ -2366,6 +2351,25 @@ public final class JSONLexer {
         }
 
         return array;
+    }
+
+    protected int computeFieldIntValue(int offset, char chLocal) {
+        int charIndex;
+        int value = chLocal - '0';
+        for (; ; ) {
+            // chLocal = charAt(bp + (offset++));
+            charIndex = bp + (offset++);
+            chLocal = charIndex >= this.len ? //
+                    EOI //
+                    : text.charAt(charIndex);
+
+            if (chLocal >= '0' && chLocal <= '9') {
+                value = value * 10 + (chLocal - '0');
+            } else {
+                break;
+            }
+        }
+        return value;
     }
 
     public long scanFieldLong(long fieldHashCode) {

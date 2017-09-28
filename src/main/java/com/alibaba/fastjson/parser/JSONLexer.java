@@ -2162,6 +2162,8 @@ public final class JSONLexer {
 
         int value;
         if (chLocal >= '0' && chLocal <= '9') {
+            int offset2 = offset;
+            char chLocal2 = chLocal;
             boolean shouldReturn = false;
             for (;;) {
                 // chLocal = charAt(bp + (offset++));
@@ -2185,6 +2187,8 @@ public final class JSONLexer {
                     break;
                 }
             }
+            offset = offset2;
+            chLocal = chLocal2;
             value = chLocal - '0';
             for (;;) {
                 // chLocal = charAt(bp + (offset++));

@@ -2199,6 +2199,24 @@ public final class JSONLexer {
                     //assert chLocal != '.';
                     if (chLocal == '\"') {
                         //assert !!quote;
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            offset = offset2;
+            for (;;) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                if (chLocal >= '0' && chLocal <= '9') {
+                } else {
+                    //assert chLocal != '.';
+                    if (chLocal == '\"') {
+                        //assert !!quote;
                         int index = bp + (offset++);
                         chLocal = index >= this.len ? //
                                 EOI //

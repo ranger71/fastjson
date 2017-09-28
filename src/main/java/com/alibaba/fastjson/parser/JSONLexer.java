@@ -2162,6 +2162,7 @@ public final class JSONLexer {
 
         int value;
         if (chLocal >= '0' && chLocal <= '9') {
+            boolean shouldReturn = false;
             value = chLocal - '0';
             for (;;) {
                 // chLocal = charAt(bp + (offset++));
@@ -2173,11 +2174,13 @@ public final class JSONLexer {
                     value = value * 10 + (chLocal - '0');
                 } else if (chLocal == '.') {
                     matchStat = NOT_MATCH;
-                    return 0;
+                    shouldReturn = true;
+                    break;
                 } else if (chLocal == '\"') {
                     if (!quote) {
                         matchStat = NOT_MATCH;
-                        return 0;
+                        shouldReturn = true;
+                        break;
                     }
                     int index = bp + (offset++);
                     chLocal = index >= this.len ? //
@@ -2188,6 +2191,7 @@ public final class JSONLexer {
                     break;
                 }
             }
+            if (shouldReturn) return 0;
             if (value < 0) {
                 matchStat = NOT_MATCH;
                 return 0;

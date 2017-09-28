@@ -2163,6 +2163,28 @@ public final class JSONLexer {
         int value;
         if (chLocal >= '0' && chLocal <= '9') {
             boolean shouldReturn = false;
+            for (;;) {
+                // chLocal = charAt(bp + (offset++));
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= this.len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+                if (chLocal >= '0' && chLocal <= '9') {
+                } else if (chLocal == '.') {
+                    matchStat = NOT_MATCH;
+                    shouldReturn = true;
+                    break;
+                } else if (chLocal == '\"') {
+                    if (!quote) {
+                        matchStat = NOT_MATCH;
+                        shouldReturn = true;
+                        break;
+                    }
+                    break;
+                } else {
+                    break;
+                }
+            }
             value = chLocal - '0';
             for (;;) {
                 // chLocal = charAt(bp + (offset++));
@@ -2173,13 +2195,9 @@ public final class JSONLexer {
                 if (chLocal >= '0' && chLocal <= '9') {
                     value = value * 10 + (chLocal - '0');
                 } else if (chLocal == '.') {
-                    matchStat = NOT_MATCH;
-                    shouldReturn = true;
                     break;
                 } else if (chLocal == '\"') {
                     if (!quote) {
-                        matchStat = NOT_MATCH;
-                        shouldReturn = true;
                         break;
                     }
                     int index = bp + (offset++);

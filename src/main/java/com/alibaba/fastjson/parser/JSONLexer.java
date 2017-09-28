@@ -2164,7 +2164,6 @@ public final class JSONLexer {
         if (chLocal >= '0' && chLocal <= '9') {
             int offset2 = offset;
             char chLocal2 = chLocal;
-            boolean shouldReturn = false;
             for (;;) {
                 // chLocal = charAt(bp + (offset++));
                 charIndex = bp + (offset++);
@@ -2174,20 +2173,17 @@ public final class JSONLexer {
                 if (chLocal >= '0' && chLocal <= '9') {
                 } else if (chLocal == '.') {
                     matchStat = NOT_MATCH;
-                    shouldReturn = true;
-                    break;
+                    return 0;
                 } else if (chLocal == '\"') {
                     if (!quote) {
                         matchStat = NOT_MATCH;
-                        shouldReturn = true;
-                        break;
+                        return 0;
                     }
                     break;
                 } else {
                     break;
                 }
             }
-            if (shouldReturn) return 0;
             offset = offset2;
             chLocal = chLocal2;
             value = chLocal - '0';
@@ -2199,19 +2195,18 @@ public final class JSONLexer {
                         : text.charAt(charIndex);
                 if (chLocal >= '0' && chLocal <= '9') {
                     value = value * 10 + (chLocal - '0');
-                } else if (chLocal == '.') {
-                    break;
-                } else if (chLocal == '\"') {
-                    if (!quote) {
+                } else {
+                    //assert chLocal != '.';
+                    if (chLocal == '\"') {
+                        //assert !!quote;
+                        int index = bp + (offset++);
+                        chLocal = index >= this.len ? //
+                                EOI //
+                                : text.charAt(index);
+                        break;
+                    } else {
                         break;
                     }
-                    int index = bp + (offset++);
-                    chLocal = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                    break;
-                } else {
-                    break;
                 }
             }
             if (value < 0) {

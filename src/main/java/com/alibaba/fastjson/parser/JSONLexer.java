@@ -2304,18 +2304,8 @@ public final class JSONLexer {
                 }
                 if (chLocal >= '0' && chLocal <= '9') {
                     int value = computeFieldIntValue(offset, chLocal);
-                    for (; ; ) {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-
-                        if (chLocal >= '0' && chLocal <= '9') {
-                        } else {
-                            break;
-                        }
-                    }
+                    offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+                    chLocal = charAt(bp + offset - 1);
 
                     if (arrayIndex >= array.length) {
                         int[] tmp = new int[array.length * 3 / 2];
@@ -2844,28 +2834,16 @@ public final class JSONLexer {
         if (notMatch2(offset, chLocal)) return 0;
         //assert chLocal >= '0' && chLocal <= '9';
         int intVal = computeIntVal(offset, chLocal);
-        for (;;) {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal >= '0' && chLocal <= '9') {
-                continue;
-            } else {
-                break;
-            }
-        }
+        offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+        chLocal = charAt(bp + offset - 1);
 
         int power = computePower(offset, chLocal);
         boolean small = (chLocal == '.');
         if (small) {
             chLocal = charAt(bp + (offset++));
             //assert chLocal >= '0' && chLocal <= '9';
-            for (; ; ) {
-                chLocal = charAt(bp + (offset++));
-                if (chLocal >= '0' && chLocal <= '9') {
-                    continue;
-                } else {
-                    break;
-                }
-            }
+            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+            chLocal = charAt(bp + offset - 1);
         }
 
         boolean exp = chLocal == 'e' || chLocal == 'E';
@@ -2874,13 +2852,8 @@ public final class JSONLexer {
             if (chLocal == '+' || chLocal == '-') {
                 chLocal = charAt(bp + (offset++));
             }
-            for (;;) {
-                if (chLocal >= '0' && chLocal <= '9') {
-                    chLocal = charAt(bp + (offset++));
-                } else {
-                    break;
-                }
-            }
+            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+            chLocal = charAt(bp + offset - 1);
         }
 
         int count = bp + offset - start - 1;
@@ -2990,18 +2963,9 @@ public final class JSONLexer {
             }
 
             int intVal = computeIntVal(offset, chLocal);
-            for (; ; ) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal >= '0' && chLocal <= '9') {
-                    continue;
-                } else {
-                    break;
-                }
-            }
+            chLocal = charAt(bp + (offset++));
+            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+            chLocal = charAt(bp + offset - 1);
 
             int power = computePower(offset, chLocal);
             boolean small = (chLocal == '.');
@@ -3012,19 +2976,8 @@ public final class JSONLexer {
                         EOI //
                         : text.charAt(charIndex);
                 //assert chLocal >= '0' && chLocal <= '9';
-                for (; ; ) {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= this.len ? //
-                            EOI //
-                            : text.charAt(charIndex);
-
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
+                offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+                chLocal = charAt(bp + offset - 1);
             }
 
             boolean exp = chLocal == 'e' || chLocal == 'E';
@@ -3184,28 +3137,17 @@ public final class JSONLexer {
 
         if (notMatch2(offset, chLocal)) return 0;
         int intVal = computeIntVal(offset, chLocal);
-        for (; ; ) {
-            chLocal = charAt(bp + (offset++));
-            if (chLocal >= '0' && chLocal <= '9') {
-                continue;
-            } else {
-                break;
-            }
-        }
+        chLocal = charAt(bp + (offset++));
+        offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+        chLocal = charAt(bp + offset - 1);
 
         int power = computePower(offset, chLocal);
         boolean small = (chLocal == '.');
         if (small) {
             chLocal = charAt(bp + (offset++));
             //assert chLocal >= '0' && chLocal <= '9';
-            for (; ; ) {
-                chLocal = charAt(bp + (offset++));
-                if (chLocal >= '0' && chLocal <= '9') {
-                    continue;
-                } else {
-                    break;
-                }
-            }
+            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+            chLocal = charAt(bp + offset - 1);
         }
         boolean exp = chLocal == 'e' || chLocal == 'E';
         if (exp) {
@@ -3213,13 +3155,8 @@ public final class JSONLexer {
             if (chLocal == '+' || chLocal == '-') {
                 chLocal = charAt(bp + (offset++));
             }
-            for (; ; ) {
-                if (chLocal >= '0' && chLocal <= '9') {
-                    chLocal = charAt(bp + (offset++));
-                } else {
-                    break;
-                }
-            }
+            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+            chLocal = charAt(bp + offset - 1);
         }
 
         int count = bp + offset - start - 1;
@@ -3317,18 +3254,9 @@ public final class JSONLexer {
             }
 
             int intVal = computeIntVal(offset, chLocal);
-            for (; ; ) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal >= '0' && chLocal <= '9') {
-                    continue;
-                } else {
-                    break;
-                }
-            }
+            chLocal = charAt(bp + (offset++));
+            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+            chLocal = charAt(bp + offset - 1);
 
             int power = computePower(offset, chLocal);
             boolean small = (chLocal == '.');
@@ -3339,19 +3267,8 @@ public final class JSONLexer {
                         EOI //
                         : text.charAt(charIndex);
                 //assert chLocal >= '0' && chLocal <= '9';
-                for (; ; ) {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= this.len ? //
-                            EOI //
-                            : text.charAt(charIndex);
-
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
+                offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+                chLocal = charAt(bp + offset - 1);
             }
 
             boolean exp = chLocal == 'e' || chLocal == 'E';
@@ -3368,17 +3285,8 @@ public final class JSONLexer {
                             EOI //
                             : text.charAt(charIndex);
                 }
-                for (; ; ) {
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                    } else {
-                        break;
-                    }
-                }
+                offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+                chLocal = charAt(bp + offset - 1);
             }
 
             int count = bp + offset - start - 1;
@@ -3507,18 +3415,8 @@ public final class JSONLexer {
             }
 
             // assert chLocal >= '0' && chLocal <= '9';
-            for (; ; ) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal >= '0' && chLocal <= '9') {
-                    continue;
-                } else {
-                    break;
-                }
-            }
+            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+            chLocal = charAt(bp + offset - 1);
 
             boolean small = (chLocal == '.');
             if (small) {
@@ -3528,19 +3426,8 @@ public final class JSONLexer {
                         EOI //
                         : text.charAt(charIndex);
                 //assert chLocal >= '0' && chLocal <= '9';
-                for (; ; ) {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= this.len ? //
-                            EOI //
-                            : text.charAt(charIndex);
-
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
+                offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+                chLocal = charAt(bp + offset - 1);
             }
 
             boolean exp = chLocal == 'e' || chLocal == 'E';
@@ -3557,17 +3444,8 @@ public final class JSONLexer {
                             EOI //
                             : text.charAt(charIndex);
                 }
-                for (; ; ) {
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                    } else {
-                        break;
-                    }
-                }
+                offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+                chLocal = charAt(bp + offset - 1);
             }
 
             arraySize++;
@@ -3605,18 +3483,8 @@ public final class JSONLexer {
             }
             if (notMatch2(offset, chLocal)) return true;
             if (chLocal >= '0' && chLocal <= '9') {
-                for (; ; ) {
-                    // chLocal = charAt(bp + (offset++));
-                    charIndex = bp + (offset++);
-                    chLocal = charIndex >= this.len ? //
-                            EOI //
-                            : text.charAt(charIndex);
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
+                offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+                chLocal = charAt(bp + offset - 1);
 
                 boolean small = (chLocal == '.');
                 if (small) {
@@ -3626,19 +3494,8 @@ public final class JSONLexer {
                             EOI //
                             : text.charAt(charIndex);
                     //assert chLocal >= '0' && chLocal <= '9';
-                    for (; ; ) {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-
-                        if (chLocal >= '0' && chLocal <= '9') {
-                            continue;
-                        } else {
-                            break;
-                        }
-                    }
+                    offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+                    chLocal = charAt(bp + offset - 1);
                 }
 
                 boolean exp = chLocal == 'e' || chLocal == 'E';
@@ -3655,17 +3512,8 @@ public final class JSONLexer {
                                 EOI //
                                 : text.charAt(charIndex);
                     }
-                    for (; ; ) {
-                        if (chLocal >= '0' && chLocal <= '9') {
-                            // chLocal = charAt(bp + (offset++));
-                            charIndex = bp + (offset++);
-                            chLocal = charIndex >= this.len ? //
-                                    EOI //
-                                    : text.charAt(charIndex);
-                        } else {
-                            break;
-                        }
-                    }
+                    offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+                    chLocal = charAt(bp + offset - 1);
                 }
 
                 if (chLocal == ',') {
@@ -3685,18 +3533,9 @@ public final class JSONLexer {
     private boolean notMatch2(int offset, char chLocal) {
         int charIndex;
         if (chLocal >= '0' && chLocal <= '9') {
-            for (; ; ) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal >= '0' && chLocal <= '9') {
-                    continue;
-                } else {
-                    break;
-                }
-            }
+            chLocal = charAt(bp + (offset++));
+            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+            chLocal = charAt(bp + offset - 1);
 
             boolean small = (chLocal == '.');
             if (small) {

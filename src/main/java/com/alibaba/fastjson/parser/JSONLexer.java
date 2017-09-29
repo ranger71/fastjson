@@ -3041,17 +3041,7 @@ public final class JSONLexer {
                             EOI //
                             : text.charAt(charIndex);
                 }
-                for (; ; ) {
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                    } else {
-                        break;
-                    }
-                }
+                offset = skipDecimalDigits(offset, chLocal, bp, len, text);
                 chLocal = charAt(bp + offset - 1);
             }
 
@@ -3066,6 +3056,21 @@ public final class JSONLexer {
                         EOI //
                         : text.charAt(charIndex);
             } else if (chLocal == ']') {
+                break;
+            }
+        }
+        return offset;
+    }
+
+    private static int skipDecimalDigits(int offset, char chLocal, int bp, int len, String text) {
+        int charIndex;
+        for (; ; ) {
+            if (chLocal >= '0' && chLocal <= '9') {
+                charIndex = bp + (offset++);
+                chLocal = charIndex >= len ? //
+                        EOI //
+                        : text.charAt(charIndex);
+            } else {
                 break;
             }
         }

@@ -3057,17 +3057,7 @@ public final class JSONLexer {
                 int offset3 = offset;
                 offset = offset2;
                 chLocal = chLocal2;
-                for (; ; ) {
-                    if (chLocal >= '0' && chLocal <= '9') {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
-                    } else {
-                        break;
-                    }
-                }
+                chLocal = charAt(bp + offset);
                 offset = offset3;
             }
 

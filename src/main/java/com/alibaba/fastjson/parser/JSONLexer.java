@@ -3055,8 +3055,8 @@ public final class JSONLexer {
                     }
                 }
                 int offset3 = offset;
-                chLocal = charAt(bp + offset3 - 1);
-                offset = offset3;
+                chLocal = charAt(bp + offset - 1);
+                offset = offset;
             }
 
             int count = bp + offset - start - 1;

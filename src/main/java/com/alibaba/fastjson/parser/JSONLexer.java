@@ -3057,7 +3057,7 @@ public final class JSONLexer {
                 int offset3 = offset;
                 offset = offset2;
                 chLocal = chLocal2;
-                chLocal = charAt(bp + offset);
+                chLocal = charAt(bp + offset3 - 1);
                 offset = offset3;
             }
 

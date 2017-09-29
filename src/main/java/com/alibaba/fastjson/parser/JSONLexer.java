@@ -3041,8 +3041,6 @@ public final class JSONLexer {
                             EOI //
                             : text.charAt(charIndex);
                 }
-                int offset2 = offset;
-                char chLocal2 = chLocal;
                 for (; ; ) {
                     if (chLocal >= '0' && chLocal <= '9') {
                         // chLocal = charAt(bp + (offset++));
@@ -3054,9 +3052,7 @@ public final class JSONLexer {
                         break;
                     }
                 }
-                int offset3 = offset;
                 chLocal = charAt(bp + offset - 1);
-                offset = offset;
             }
 
             int count = bp + offset - start - 1;

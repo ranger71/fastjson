@@ -2164,17 +2164,8 @@ public final class JSONLexer {
         if (chLocal >= '0' && chLocal <= '9') {
             int offset2 = offset;
             char chLocal2 = chLocal;
-            for (;;) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal >= '0' && chLocal <= '9') {
-                } else {
-                    break;
-                }
-            }
+            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+            chLocal = charAt(bp + offset - 1);
             if (chLocal == '.') {
                 matchStat = NOT_MATCH;
                 return 0;

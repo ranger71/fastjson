@@ -2202,10 +2202,8 @@ public final class JSONLexer {
                         chLocal = index >= this.len ? //
                                 EOI //
                                 : text.charAt(index);
-                        break;
-                    } else {
-                        break;
                     }
+                    break;
                 }
             }
             if (value < 0) {

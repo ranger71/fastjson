@@ -2195,16 +2195,16 @@ public final class JSONLexer {
                         : text.charAt(charIndex);
                 if (chLocal >= '0' && chLocal <= '9') {
                 } else {
-                    //assert chLocal != '.';
-                    if (chLocal == '\"') {
-                        //assert !!quote;
-                        int index = bp + (offset++);
-                        chLocal = index >= this.len ? //
-                                EOI //
-                                : text.charAt(index);
-                    }
                     break;
                 }
+            }
+            //assert chLocal != '.';
+            if (chLocal == '\"') {
+                //assert !!quote;
+                int index = bp + (offset++);
+                chLocal = index >= this.len ? //
+                        EOI //
+                        : text.charAt(index);
             }
             if (value < 0) {
                 matchStat = NOT_MATCH;

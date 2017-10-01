@@ -2187,24 +2187,13 @@ public final class JSONLexer {
             offset = offset2;
             chLocal = chLocal2;
             value = computeFieldIntValue(offset, chLocal);
-            for (;;) {
-                // chLocal = charAt(bp + (offset++));
-                charIndex = bp + (offset++);
-                chLocal = charIndex >= this.len ? //
-                        EOI //
-                        : text.charAt(charIndex);
-                if (chLocal >= '0' && chLocal <= '9') {
-                } else {
-                    break;
-                }
-            }
+            chLocal = charAt(bp + (offset++));
+            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+            chLocal = charAt(bp + offset - 1);
             //assert chLocal != '.';
             if (chLocal == '\"') {
                 //assert !!quote;
-                int index = bp + (offset++);
-                chLocal = index >= this.len ? //
-                        EOI //
-                        : text.charAt(index);
+                chLocal = charAt(bp + (offset++));
             }
             if (value < 0) {
                 matchStat = NOT_MATCH;

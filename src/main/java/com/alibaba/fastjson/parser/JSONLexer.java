@@ -2175,16 +2175,11 @@ public final class JSONLexer {
                     return 0;
                 }
             }
-            offset = offset2;
-            chLocal = chLocal2;
-            value = computeFieldIntValue(offset, chLocal);
+            value = computeFieldIntValue(offset2, chLocal2);
             if (value < 0) {
                 matchStat = NOT_MATCH;
                 return 0;
             }
-            chLocal = charAt(bp + (offset++));
-            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
-            chLocal = charAt(bp + offset - 1);
             //assert chLocal != '.';
             if (chLocal == '\"') {
                 //assert !!quote;

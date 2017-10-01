@@ -2187,6 +2187,10 @@ public final class JSONLexer {
             offset = offset2;
             chLocal = chLocal2;
             value = computeFieldIntValue(offset, chLocal);
+            if (value < 0) {
+                matchStat = NOT_MATCH;
+                return 0;
+            }
             chLocal = charAt(bp + (offset++));
             offset = skipDecimalDigits(offset, chLocal, bp, len, text);
             chLocal = charAt(bp + offset - 1);
@@ -2194,10 +2198,6 @@ public final class JSONLexer {
             if (chLocal == '\"') {
                 //assert !!quote;
                 chLocal = charAt(bp + (offset++));
-            }
-            if (value < 0) {
-                matchStat = NOT_MATCH;
-                return 0;
             }
         } else {
             matchStat = NOT_MATCH;

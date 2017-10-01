@@ -2355,6 +2355,25 @@ public final class JSONLexer {
         return value;
     }
 
+    protected long computeFieldLongValue(int offset, char chLocal) {
+        int charIndex;
+        long value = chLocal - '0';
+        for (; ; ) {
+            // chLocal = charAt(bp + (offset++));
+            charIndex = bp + (offset++);
+            chLocal = charIndex >= this.len ? //
+                    EOI //
+                    : text.charAt(charIndex);
+
+            if (chLocal >= '0' && chLocal <= '9') {
+                value = value * 10 + (chLocal - '0');
+            } else {
+                break;
+            }
+        }
+        return value;
+    }
+
     public long scanFieldLong(long fieldHashCode) {
         matchStat = UNKNOWN;
 
@@ -2364,65 +2383,53 @@ public final class JSONLexer {
         }
 
         // char chLocal = charAt(bp + (offset++));
-        char chLocal;
-        {
-            int index = bp + (offset++);
-            chLocal = index >= this.len ? //
-                    EOI //
-                    : text.charAt(index);
-        }
-
-        long value;
+        int charIndex = bp + (offset++);
+        char chLocal = charIndex >= this.len ? //
+                EOI //
+                : text.charAt(charIndex);
 
         boolean quote = chLocal == '"';
         if (quote) {
-            int index = bp + (offset++);
-            chLocal = index >= this.len ? //
+            quote = true;
+
+            charIndex = bp + (offset++);
+            chLocal = charIndex >= this.len ? //
                     EOI //
-                    : text.charAt(index);
+                    : text.charAt(charIndex);
         }
 
         final boolean negative = chLocal == '-';
         if (negative) {
-            int index = bp + (offset++);
-            chLocal = index >= this.len ? //
+            charIndex = bp + (offset++);
+            chLocal = charIndex >= this.len ? //
                     EOI //
-                    : text.charAt(index);
+                    : text.charAt(charIndex);
         }
 
-        if (chLocal >= '0' //
-                && chLocal <= '9') {
-            value = chLocal - '0';
-            for (;;) {
-                // chLocal = charAt(bp + (offset++));
-                {
-                    int index = bp + (offset++);
-                    chLocal = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                }
-                if (chLocal >= '0' && chLocal <= '9') {
-                    value = value * 10 + (chLocal - '0');
-                } else if (chLocal == '.') {
+        long value;
+        if (chLocal >= '0' && chLocal <= '9') {
+            int offset2 = offset;
+            char chLocal2 = chLocal;
+            offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+            chLocal = charAt(bp + offset - 1);
+            if (chLocal == '.') {
+                matchStat = NOT_MATCH;
+                return 0;
+            } else if (chLocal == '\"') {
+                if (!quote) {
                     matchStat = NOT_MATCH;
                     return 0;
-                } else if (chLocal == '\"') {
-                    if (!quote) {
-                        matchStat = NOT_MATCH;
-                        return 0;
-                    }
-                    int index = bp + (offset++);
-                    chLocal = index >= this.len ? //
-                            EOI //
-                            : text.charAt(index);
-                    break;
-                } else {
-                    break;
                 }
             }
+            value = computeFieldLongValue(offset2, chLocal2);
             if (value < 0) {
                 matchStat = NOT_MATCH;
                 return 0;
+            }
+            //assert chLocal != '.';
+            if (chLocal == '\"') {
+                //assert !!quote;
+                chLocal = charAt(bp + (offset++));
             }
         } else {
             matchStat = NOT_MATCH;

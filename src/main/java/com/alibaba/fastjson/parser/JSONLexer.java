@@ -2171,17 +2171,17 @@ public final class JSONLexer {
                         EOI //
                         : text.charAt(charIndex);
                 if (chLocal >= '0' && chLocal <= '9') {
-                } else if (chLocal == '.') {
-                    matchStat = NOT_MATCH;
-                    return 0;
-                } else if (chLocal == '\"') {
-                    if (!quote) {
-                        matchStat = NOT_MATCH;
-                        return 0;
-                    }
-                    break;
                 } else {
                     break;
+                }
+            }
+            if (chLocal == '.') {
+                matchStat = NOT_MATCH;
+                return 0;
+            } else if (chLocal == '\"') {
+                if (!quote) {
+                    matchStat = NOT_MATCH;
+                    return 0;
                 }
             }
             offset = offset2;

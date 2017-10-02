@@ -2248,44 +2248,27 @@ public final class JSONLexer {
             matchStat = NOT_MATCH;
             return null;
         }
+        int offset2 = offset;
+        char chLocal2 = chLocal;
+
         // chLocal = charAt(bp + (offset++));
         charIndex = bp + (offset++);
         chLocal = charIndex >= this.len ? //
                 EOI //
                 : text.charAt(charIndex);
 
-
-        int[] array = new int[16];
-        int arrayIndex = 0;
-
-        if (chLocal == ']') {
-            // chLocal = charAt(bp + (offset++));
-            charIndex = bp + (offset++);
-            chLocal = charIndex >= this.len ? //
-                    EOI //
-                    : text.charAt(charIndex);
-        } else {
+        if (chLocal != ']') {
             for (;;) {
-                boolean nagative = false;
                 if (chLocal == '-') {
                     // chLocal = charAt(bp + (offset++));
                     charIndex = bp + (offset++);
                     chLocal = charIndex >= this.len ? //
                             EOI //
                             : text.charAt(charIndex);
-                    nagative = true;
                 }
                 if (chLocal >= '0' && chLocal <= '9') {
-                    int value = computeFieldIntValue(offset, chLocal);
                     offset = skipDecimalDigits(offset, chLocal, bp, len, text);
                     chLocal = charAt(bp + offset - 1);
-
-                    if (arrayIndex >= array.length) {
-                        int[] tmp = new int[array.length * 3 / 2];
-                        System.arraycopy(array, 0, tmp, 0, arrayIndex);
-                        array = tmp;
-                    }
-                    array[arrayIndex++] = nagative ? -value : value;
 
                     if (chLocal == ',') {
                         // chLocal = charAt(bp + (offset++));
@@ -2294,11 +2277,6 @@ public final class JSONLexer {
                                 EOI //
                                 : text.charAt(charIndex);
                     } else if (chLocal == ']') {
-                        // chLocal = charAt(bp + (offset++));
-                        charIndex = bp + (offset++);
-                        chLocal = charIndex >= this.len ? //
-                                EOI //
-                                : text.charAt(charIndex);
                         break;
                     }
                 } else {
@@ -2307,13 +2285,15 @@ public final class JSONLexer {
                 }
             }
         }
-
-
-        if (arrayIndex != array.length) {
-            int[] tmp = new int[arrayIndex];
-            System.arraycopy(array, 0, tmp, 0, arrayIndex);
-            array = tmp;
-        }
+        offset = offset2;
+        chLocal = chLocal2;
+        int[] array = new int[computeIntArraySize(offset, chLocal)];
+        offset = populateIntArray(offset, array);
+        // chLocal = charAt(bp + (offset++));
+        charIndex = bp + (offset++);
+        chLocal = charIndex >= this.len ? //
+                EOI //
+                : text.charAt(charIndex);
 
         if (chLocal == ',') {
             bp += (offset - 1);
@@ -2334,6 +2314,93 @@ public final class JSONLexer {
         }
 
         return array;
+    }
+
+    protected int populateIntArray(int offset, int[] array) {
+        int charIndex;
+        char chLocal;
+        int arrayIndex = 0;
+        // chLocal = charAt(bp + (offset++));
+        charIndex = bp + (offset++);
+        chLocal = charIndex >= this.len ? //
+                EOI //
+                : text.charAt(charIndex);
+
+        if (chLocal == ']') {
+            // chLocal = charAt(bp + (offset++));
+            charIndex = bp + (offset++);
+            chLocal = charIndex >= this.len ? //
+                    EOI //
+                    : text.charAt(charIndex);
+        } else {
+            for (;;) {
+                boolean nagative = false;
+                if (chLocal == '-') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                    nagative = true;
+                }
+                // assert chLocal >= '0' && chLocal <= '9';
+                int value = computeFieldIntValue(offset, chLocal);
+                offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+                chLocal = charAt(bp + offset - 1);
+
+                array[arrayIndex++] = nagative ? -value : value;
+
+                if (chLocal == ',') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                } else if (chLocal == ']') {
+                    break;
+                }
+            }
+        }
+        return offset;
+    }
+
+    protected int computeIntArraySize(int offset, char chLocal) {
+        int charIndex;
+        int arraySize = 0;
+
+        // chLocal = charAt(bp + (offset++));
+        charIndex = bp + (offset++);
+        chLocal = charIndex >= this.len ? //
+                EOI //
+                : text.charAt(charIndex);
+
+        if (chLocal != ']') {
+            for (;;) {
+                if (chLocal == '-') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                }
+                // assert chLocal >= '0' && chLocal <= '9';
+                offset = skipDecimalDigits(offset, chLocal, bp, len, text);
+                chLocal = charAt(bp + offset - 1);
+
+                arraySize++;
+
+                if (chLocal == ',') {
+                    // chLocal = charAt(bp + (offset++));
+                    charIndex = bp + (offset++);
+                    chLocal = charIndex >= this.len ? //
+                            EOI //
+                            : text.charAt(charIndex);
+                } else if (chLocal == ']') {
+                    break;
+                }
+            }
+        }
+        return arraySize;
     }
 
     protected int computeFieldIntValue(int offset, char chLocal) {
